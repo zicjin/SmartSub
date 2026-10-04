@@ -100,7 +100,15 @@ export function fetchText(url) {
 }
 
 export function sha256(file) {
-  return createHash('sha256').update(fs.readFileSync(file)).digest('hex').toLowerCase();
+  return createHash('sha256')
+    .update(fs.readFileSync(file))
+    .digest('hex')
+    .toLowerCase();
+}
+
+/** Return the base64 SHA-512 digest used by npm package integrity strings. */
+export function sha512(file) {
+  return createHash('sha512').update(fs.readFileSync(file)).digest('base64');
 }
 
 /** gunzip srcPath -> destPath。 */

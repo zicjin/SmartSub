@@ -22,18 +22,31 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import * as tar from 'tar';
-import {
-  download,
-  fetchText,
-  sha256,
-  resignMacNodes,
-} from './lib/native-download.mjs';
+import { execFileSync } from 'node:child_process';
+import { download, sha512, resignMacNodes } from './lib/native-download.mjs';
 
-// 与 main/helpers/sherpaOnnx/sherpaLibDownloader.ts 的 SHERPA_VERSION 保持一致。
-const SHERPA_VERSION = '1.13.2';
-const SHERPA_TAG = 'sherpa-libs-latest';
-const SHERPA_REPO = 'buxuku/smartsub-py-engine';
+// 与 main/helpers/sherpaOnnx/sherpaLibPaths.ts 保持一致。1.13.8 包含
+// FireRedASR v1 fixed-cache + FireRedASR2 dynamic-cache 兼容修复
+// (upstream 2d8286d and f7982bd).
+const SHERPA_VERSION = '1.13.8';
+
+// 官方 npm 平台包由 sherpa-onnx 的 release workflow 构建，覆盖 SmartSub
+// 的 CPU 目标平台。每个 tarball 的 integrity 固定在这里，避免构建时
+// 静默取得另一份原生库。
+const PACKAGE_INTEGRITY = {
+  'darwin-arm64':
+    'FPNgJMgnWVl/KhRTIhG3KL3A4Om63Rn4YKXc9/uHY7SzLcvqLJLc/h7UBWJwduXvv7K18t5NpxHR6XgXn4sjWw==',
+  'darwin-x64':
+    '7BLRpjM6w4f9W46/nmkmq8lEKUayhebvcpslCVQ+6QN2uReYlZEMDZlSpXMjme+hUFrPfRz8P3UNq8ep/4d19g==',
+  'linux-x64':
+    '6plnhjagsSeTntCgnlag86hWbs/uZE9Crms1LgOb68/1nKsIQjMd+WG519m+aPwT6TrsBOiEMzrx41t8sL5L5g==',
+  'linux-arm64':
+    'Tlg7a70b/Wge3OF8IgTHF9jhSVCsLyKQKhwc4BsJ5A+dL/SrFtGBjzuHp4XeLhiiOT7afCxX5PdSn/D4c8Lnuw==',
+  'win-x64':
+    'oZF1c9VPOKtMwn83Bboc5XSWL+76BRoyB3eUuVnCknBKxwSULZU2Foia9VHWzU+n4I12rPsP6z6H9Rp1hD9o8g==',
+  'win-ia32':
+    'H0Ojln9hfvM+pxWqW0cnjB/XK8/JPq4/k0IWu2JpY5Z458M3zv+XC3Hu+wmot3AoH/K1Bgt23n/tTKtPV9x8qg==',
+};
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -47,17 +60,21 @@ function getPlatformKey() {
   return `linux-${arch}`;
 }
 
-function assetName(platformKey) {
-  return `smartsub-sherpa-onnx-${platformKey}-${SHERPA_VERSION}.tar.gz`;
+function packageName(platformKey) {
+  return `sherpa-onnx-${platformKey}`;
 }
 
-function releaseUrl(asset) {
-  return `https://github.com/${SHERPA_REPO}/releases/download/${SHERPA_TAG}/${asset}`;
+function packageUrl(platformKey) {
+  return `https://registry.npmjs.org/${packageName(platformKey)}/-/${packageName(platformKey)}-${SHERPA_VERSION}.tgz`;
 }
 
 async function main() {
   const platformKey = getPlatformKey();
-  const asset = assetName(platformKey);
+  const pkg = packageName(platformKey);
+  const url = packageUrl(platformKey);
+  const expectedIntegrity = PACKAGE_INTEGRITY[platformKey];
+  if (!expectedIntegrity)
+    throw new Error(`unsupported sherpa platform: ${platformKey}`);
   const outDir = path.join(
     root,
     'extraResources',
@@ -65,30 +82,34 @@ async function main() {
     'native',
     platformKey,
   );
-  const tmp = path.join(os.tmpdir(), asset);
+  const tmp = path.join(os.tmpdir(), `${pkg}-${SHERPA_VERSION}.tgz`);
 
-  console.log(`Fetching ${asset} ...`);
-  await download(releaseUrl(asset), tmp);
-
-  // 校验 SHA256（远端 .sha256 不可用时跳过，不阻断本地开发）。
-  try {
-    const text = await fetchText(`${releaseUrl(asset)}.sha256`);
-    const expected = (text.trim().match(/^([a-fA-F0-9]{64})/) || [])[1];
-    if (expected) {
-      const actual = sha256(tmp);
-      if (actual !== expected.toLowerCase()) {
-        throw new Error(`sherpa checksum mismatch: ${expected} vs ${actual}`);
-      }
-      console.log('checksum OK');
-    }
-  } catch (e) {
-    console.warn(`sherpa .sha256 verify skipped: ${e}`);
+  console.log(`Fetching ${pkg}@${SHERPA_VERSION} ...`);
+  await download(url, tmp);
+  const actualIntegrity = sha512(tmp);
+  if (actualIntegrity !== expectedIntegrity) {
+    throw new Error(
+      `sherpa integrity mismatch: expected sha512-${expectedIntegrity}, got sha512-${actualIntegrity}`,
+    );
   }
+  console.log('integrity OK');
 
   fs.rmSync(outDir, { recursive: true, force: true });
   fs.mkdirSync(outDir, { recursive: true });
-  await tar.extract({ file: tmp, cwd: outDir });
+  const extractDir = path.join(os.tmpdir(), `${pkg}-${SHERPA_VERSION}-extract`);
+  fs.rmSync(extractDir, { recursive: true, force: true });
+  fs.mkdirSync(extractDir, { recursive: true });
+  // Use the platform tar executable so native fetching does not require a
+  // runtime npm dependency (the build image already provides tar).
+  execFileSync('tar', ['-xzf', tmp, '-C', extractDir]);
+  const packageDir = path.join(extractDir, 'package');
+  for (const file of fs.readdirSync(packageDir)) {
+    if (/\.(node|dylib|so|dll)(\..*)?$/.test(file)) {
+      fs.copyFileSync(path.join(packageDir, file), path.join(outDir, file));
+    }
+  }
   fs.rmSync(tmp, { force: true });
+  fs.rmSync(extractDir, { recursive: true, force: true });
 
   resignMacNodes(outDir);
 

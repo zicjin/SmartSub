@@ -11,7 +11,12 @@ import { getExtraResourcesPath } from '../utils';
  */
 
 /** 内置 sherpa-onnx 原生库版本（随 App 固定发布；与 fetch-sherpa-native.mjs 一致）。 */
-export const SHERPA_VERSION = '1.13.2';
+/**
+ * sherpa-onnx 1.13.8 is the first SmartSub runtime release that contains
+ * both FireRedASR cache fixes: adaptive allocation for FireRedASR2 and
+ * fixed-cache detection for FireRedASR v1.13.2 models.
+ */
+export const SHERPA_VERSION = '1.13.8';
 
 /** 当前平台 key，与引擎仓产物命名一致（sherpa-onnx-<platformKey>）。 */
 export function getSherpaPlatformKey(): string {
