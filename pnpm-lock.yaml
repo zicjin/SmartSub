@@ -159,7 +159,7 @@ importers:
         version: 2.0.9(debug@4.4.3(supports-color@8.0.0))(supports-color@8.0.0)
       next-i18next:
         specifier: ^15.3.1
-        version: 15.3.1(@types/react@18.3.31)(i18next@23.15.2)(next@14.2.35(@babel/core@7.29.7(supports-color@8.0.0))(@playwright/test@1.63.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-i18next@15.0.2(i18next@23.15.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
+        version: 15.3.1(@types/react@18.3.31)(i18next@23.15.2)(next@14.2.35(@babel/core@7.26.0(supports-color@8.0.0))(@playwright/test@1.63.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-i18next@15.0.2(i18next@23.15.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
       next-themes:
         specifier: ^0.3.0
         version: 0.3.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -170,8 +170,8 @@ importers:
         specifier: ^2.1.0
         version: 2.1.0(webpack@5.97.1(esbuild@0.28.2)(postcss@8.5.28))
       openai:
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^4.98.0
+        version: 4.98.0(ws@8.22.0)(zod@3.25.76)
       opencc-js:
         specifier: ^1.4.2
         version: 1.4.2
@@ -230,6 +230,9 @@ importers:
         specifier: ^3.25.2
         version: 3.25.2(zod@3.25.76)
     devDependencies:
+      '@babel/runtime-corejs3':
+        specifier: 7.26.10
+        version: 7.26.10
       '@playwright/test':
         specifier: ^1.63.0
         version: 1.63.0
@@ -292,7 +295,7 @@ importers:
         version: 15.5.2(supports-color@8.0.0)
       next:
         specifier: ^14.2.35
-        version: 14.2.35(@babel/core@7.29.7(supports-color@8.0.0))(@playwright/test@1.63.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        version: 14.2.35(@babel/core@7.26.0(supports-color@8.0.0))(@playwright/test@1.63.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       nextron:
         specifier: ^9.6.0
         version: 9.6.0(esbuild@0.28.2)(postcss@8.5.28)(supports-color@8.0.0)
@@ -320,6 +323,9 @@ importers:
       typescript:
         specifier: ^5.4.5
         version: 5.4.5
+      webpack:
+        specifier: 5.97.1
+        version: 5.97.1(esbuild@0.28.2)(postcss@8.5.28)
 
 packages:
   7zip-bin@5.2.0:
@@ -3871,12 +3877,6 @@ packages:
         integrity: sha512-9Y0g0Q8rmSt+H33DfKv7FOc3v+iRI+o1lbzt8jGcIosYW37IIW/2XVYq5NPdmaD5NQ59Nk26Kl/vZbwW9Fr8vg==,
       }
 
-  base-64@0.1.0:
-    resolution:
-      {
-        integrity: sha512-Y5gU45svrR5tI2Vt/X9GPd3L0HNIKzGu202EjxrXMpuc2V2CiKgemAbUUsqYmZJvPtCXoUKjNZwBJzsNScUbXA==,
-      }
-
   base64-js@1.5.1:
     resolution:
       {
@@ -4140,13 +4140,6 @@ packages:
       }
     engines: { node: '>=10' }
 
-  chalk@4.1.0:
-    resolution:
-      {
-        integrity: sha512-qwx12AxXe2Q5xQ43Ac//I6v5aXTipYrSESdOgzrN+9XjgEpyjpKuvSGaN4qE93f7TQTlerQQ8S+EQ0EyDoVL1A==,
-      }
-    engines: { node: '>=10' }
-
   chalk@4.1.2:
     resolution:
       {
@@ -4190,12 +4183,6 @@ packages:
     resolution:
       {
         integrity: sha512-iBZ4F4wRbyORVsu0jPV7gXkOsGYjGHPmAyv+HiHG8gi5PtC9KI2j1+v8/tlibRvjoWX027ypmG/n0HtO5t7unw==,
-      }
-
-  charenc@0.0.2:
-    resolution:
-      {
-        integrity: sha512-yrLQ/yVUFXkzg7EDQsPieE/53+0RlaWTs+wBrvW36cyilJ2SaDWfl4Yj7MtLTXleV9uEKefbAGUPv2/iWSooRA==,
       }
 
   chokidar@3.6.0:
@@ -4577,12 +4564,6 @@ packages:
       }
     engines: { node: '>= 8' }
 
-  crypt@0.0.2:
-    resolution:
-      {
-        integrity: sha512-mCxBlsHFYh9C+HVpiEacem8FEBnMXgU9gy4zmNC+SXAZNB/1idgp/aulFJ4FgCi7GPEVbfyng092GqL2k2rmow==,
-      }
-
   crypto-js@4.2.0:
     resolution:
       {
@@ -4838,12 +4819,6 @@ packages:
         integrity: sha512-sSuxWU5j5SR9QQji/o2qMvqRNYRDOcBTgsJ/DeCf4iSN4gW+gNMXM7wFIP+fdXZxoNiAnHUTGjCr+TSWXdRDKg==,
       }
     engines: { node: '>=0.3.1' }
-
-  digest-fetch@1.3.0:
-    resolution:
-      {
-        integrity: sha512-CGJuv6iKNM7QyZlM2T3sPAdZWd/p9zQiRNS9G+9COUCwzWFTs0Xp8NF5iePx7wtvhDykReiRRrSeNb4oMmB8lA==,
-      }
 
   dir-compare@3.3.0:
     resolution:
@@ -5623,13 +5598,6 @@ packages:
       }
     engines: { node: '>=6 <7 || >=8' }
 
-  fs-extra@9.0.0:
-    resolution:
-      {
-        integrity: sha512-pmEYSk3vYsG/bF651KPUXZ+hvjpgWYw/Gc7W9NFUe3ZVLczKKWIij3IKpOrQcdw4TILtibFslZ0UmR8Vvzig4g==,
-      }
-    engines: { node: '>=10' }
-
   fs-extra@9.0.1:
     resolution:
       {
@@ -6169,12 +6137,6 @@ packages:
         integrity: sha512-ZMERYes6pDydyuGidse7OsHxtbI7WVeUEozgR/g7rd0xUimYNlvZRE/K2MgZTjWy725IfelLeVcEM97mmtRGXw==,
       }
     engines: { node: '>=8' }
-
-  is-buffer@1.1.6:
-    resolution:
-      {
-        integrity: sha512-NcdALwpXkTm5Zvvbk7owOUSvVvBKDgKP5/ewfXEznmQFfs4ZRmanOeKBTjRVjka3QFoN6XJ+9F3USqfHqTaU5w==,
-      }
 
   is-callable@1.2.7:
     resolution:
@@ -7136,12 +7098,6 @@ packages:
       }
     engines: { node: '>= 0.4' }
 
-  md5@2.3.0:
-    resolution:
-      {
-        integrity: sha512-T1GITYmFaKuO91vxyoQMFETst+O71VUPEU3ze5GNzDm0OWdP8v1ziTaAEPUr/3kLsY3Sftgz242A1SetQiDL7g==,
-      }
-
   mdast-util-find-and-replace@3.0.2:
     resolution:
       {
@@ -7871,12 +7827,20 @@ packages:
       }
     engines: { node: '>=18' }
 
-  openai@4.0.0:
+  openai@4.98.0:
     resolution:
       {
-        integrity: sha512-UHv70gIw20pxu9tiUueE9iS+4U4eTGiTgQr+zlJ5aX4oj6LUUp+7mBn0xAqilawftwUB/biohPth2vcZFmoNYw==,
+        integrity: sha512-TmDKur1WjxxMPQAtLG5sgBSCJmX7ynTsGmewKzoDwl1fRxtbLOsiR0FA/AOAAtYUmP6azal+MYQuOENfdU+7yg==,
       }
     hasBin: true
+    peerDependencies:
+      ws: ^8.18.0
+      zod: ^3.23.8
+    peerDependenciesMeta:
+      ws:
+        optional: true
+      zod:
+        optional: true
 
   opencc-js@1.4.2:
     resolution:
@@ -11855,7 +11819,7 @@ snapshots:
 
   '@jridgewell/remapping@2.3.5':
     dependencies:
-      '@jridgewell/gen-mapping': 0.3.5
+      '@jridgewell/gen-mapping': 0.3.12
       '@jridgewell/trace-mapping': 0.3.31
 
   '@jridgewell/resolve-uri@3.1.2': {}
@@ -11881,7 +11845,7 @@ snapshots:
   '@malept/flatpak-bundler@0.4.0(supports-color@8.0.0)':
     dependencies:
       debug: 4.4.3(supports-color@8.0.0)
-      fs-extra: 9.0.0
+      fs-extra: 9.0.1
       lodash: 4.18.1
       tmp-promise: 3.0.3
     transitivePeerDependencies:
@@ -13136,8 +13100,6 @@ snapshots:
 
   balanced-match@1.0.0: {}
 
-  base-64@0.1.0: {}
-
   base64-js@1.5.1: {}
 
   baseline-browser-mapping@2.11.27: {}
@@ -13315,11 +13277,6 @@ snapshots:
       ansi-styles: 4.1.0
       supports-color: 7.1.0
 
-  chalk@4.1.0:
-    dependencies:
-      ansi-styles: 4.1.0
-      supports-color: 7.1.0
-
   chalk@4.1.2:
     dependencies:
       ansi-styles: 4.1.0
@@ -13336,8 +13293,6 @@ snapshots:
   character-entities@2.0.2: {}
 
   character-reference-invalid@2.0.1: {}
-
-  charenc@0.0.2: {}
 
   chokidar@3.6.0:
     dependencies:
@@ -13557,8 +13512,6 @@ snapshots:
       shebang-command: 2.0.0
       which: 2.0.1
 
-  crypt@0.0.2: {}
-
   crypto-js@4.2.0: {}
 
   crypto@1.0.1: {}
@@ -13688,11 +13641,6 @@ snapshots:
   diff3@0.0.3: {}
 
   diff@8.0.2: {}
-
-  digest-fetch@1.3.0:
-    dependencies:
-      base-64: 0.1.0
-      md5: 2.3.0
 
   dir-compare@3.3.0:
     dependencies:
@@ -14255,13 +14203,6 @@ snapshots:
       jsonfile: 4.0.0
       universalify: 0.1.2
 
-  fs-extra@9.0.0:
-    dependencies:
-      at-least-node: 1.0.0
-      graceful-fs: 4.2.11
-      jsonfile: 6.2.1
-      universalify: 1.0.0
-
   fs-extra@9.0.1:
     dependencies:
       at-least-node: 1.0.0
@@ -14609,8 +14550,6 @@ snapshots:
     dependencies:
       binary-extensions: 2.0.0
 
-  is-buffer@1.1.6: {}
-
   is-callable@1.2.7: {}
 
   is-ci@3.0.1:
@@ -14749,7 +14688,7 @@ snapshots:
   jake@10.8.5:
     dependencies:
       async: 3.2.6
-      chalk: 4.1.0
+      chalk: 4.1.2
       filelist: 1.0.6
       minimatch: 3.1.5
 
@@ -15358,12 +15297,6 @@ snapshots:
 
   math-intrinsics@1.1.0: {}
 
-  md5@2.3.0:
-    dependencies:
-      charenc: 0.0.2
-      crypt: 0.0.2
-      is-buffer: 1.1.6
-
   mdast-util-find-and-replace@3.0.2:
     dependencies:
       '@types/mdast': 4.0.4
@@ -15833,7 +15766,7 @@ snapshots:
 
   neo-async@2.6.2: {}
 
-  next-i18next@15.3.1(@types/react@18.3.31)(i18next@23.15.2)(next@14.2.35(@babel/core@7.29.7(supports-color@8.0.0))(@playwright/test@1.63.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-i18next@15.0.2(i18next@23.15.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0):
+  next-i18next@15.3.1(@types/react@18.3.31)(i18next@23.15.2)(next@14.2.35(@babel/core@7.26.0(supports-color@8.0.0))(@playwright/test@1.63.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-i18next@15.0.2(i18next@23.15.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0):
     dependencies:
       '@babel/runtime': 7.29.7
       '@types/hoist-non-react-statics': 3.3.7(@types/react@18.3.31)
@@ -15841,7 +15774,7 @@ snapshots:
       hoist-non-react-statics: 3.3.2
       i18next: 23.15.2
       i18next-fs-backend: 2.6.8
-      next: 14.2.35(@babel/core@7.29.7(supports-color@8.0.0))(@playwright/test@1.63.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      next: 14.2.35(@babel/core@7.26.0(supports-color@8.0.0))(@playwright/test@1.63.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react: 18.2.0
       react-i18next: 15.0.2(i18next@23.15.2)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
     transitivePeerDependencies:
@@ -15852,7 +15785,7 @@ snapshots:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 
-  next@14.2.35(@babel/core@7.29.7(supports-color@8.0.0))(@playwright/test@1.63.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+  next@14.2.35(@babel/core@7.26.0(supports-color@8.0.0))(@playwright/test@1.63.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
       '@next/env': 14.2.35
       '@swc/helpers': 0.5.5
@@ -15862,7 +15795,7 @@ snapshots:
       postcss: 8.4.31
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      styled-jsx: 5.1.1(@babel/core@7.29.7(supports-color@8.0.0))(react@18.2.0)
+      styled-jsx: 5.1.1(@babel/core@7.26.0(supports-color@8.0.0))(react@18.2.0)
     optionalDependencies:
       '@next/swc-darwin-arm64': 14.2.33
       '@next/swc-darwin-x64': 14.2.33
@@ -15986,16 +15919,18 @@ snapshots:
     dependencies:
       mimic-function: 5.0.1
 
-  openai@4.0.0:
+  openai@4.98.0(ws@8.22.0)(zod@3.25.76):
     dependencies:
       '@types/node': 18.11.18
       '@types/node-fetch': 2.6.13
       abort-controller: 3.0.0
       agentkeepalive: 4.6.0
-      digest-fetch: 1.3.0
       form-data-encoder: 1.7.2
       formdata-node: 4.4.1
       node-fetch: 2.7.0
+    optionalDependencies:
+      ws: 8.22.0
+      zod: 3.25.76
     transitivePeerDependencies:
       - encoding
 
@@ -16798,7 +16733,7 @@ snapshots:
   source-map-support@0.5.21:
     dependencies:
       buffer-from: 1.1.2
-      source-map: 0.6.0
+      source-map: 0.6.1
 
   source-map@0.6.0: {}
 
@@ -16914,12 +16849,12 @@ snapshots:
     dependencies:
       inline-style-parser: 0.1.1
 
-  styled-jsx@5.1.1(@babel/core@7.29.7(supports-color@8.0.0))(react@18.2.0):
+  styled-jsx@5.1.1(@babel/core@7.26.0(supports-color@8.0.0))(react@18.2.0):
     dependencies:
       client-only: 0.0.1
       react: 18.2.0
     optionalDependencies:
-      '@babel/core': 7.29.7(supports-color@8.0.0)
+      '@babel/core': 7.26.0(supports-color@8.0.0)
 
   sucrase@3.35.1:
     dependencies:
