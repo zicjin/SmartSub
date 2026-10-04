@@ -4,8 +4,10 @@ allowBuilds:
   core-js: true
   core-js-pure: true
   electron: true
+  electron-winstaller: true
   esbuild: true
   ffmpeg-static: true
   lfa-ponyfill: true
   msedge-tts: true
   protobufjs: true
+nodeLinker: hoisted
