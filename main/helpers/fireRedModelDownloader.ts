@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as https from 'https';
 import * as http from 'http';
+import * as crypto from 'crypto';
 import { logMessage } from './storeManager';
 import type { ModelDownloadProgress } from './modelDownloader';
 import {
@@ -12,6 +13,7 @@ import {
   FireRedModelSpec,
   FIRERED_DEFAULT_SOURCE,
   getFireRedSourceOrder,
+  getFireRedSupportedSources,
   getFireRedArchiveUrl,
   getFireRedModelScopeFileUrl,
   getFireRedModelScopeTreeUrl,
@@ -200,9 +202,13 @@ export class FireRedModelDownloader {
 
     let lastError: unknown = null;
     // 按所选源优先、其余按国内优先顺序回退（modelscope → ghproxy → github）。
-    for (const src of getFireRedSourceOrder(source)) {
+    const supported = getFireRedSupportedSources(id);
+    for (const src of getFireRedSourceOrder(source).filter((s) => supported.includes(s))) {
       try {
         if (src === 'modelscope') {
+          if (!spec.modelScopeRepo || spec.modelScopeFiles.length === 0) {
+            throw new Error(`ModelScope unavailable for ${id}`);
+          }
           await this.downloadFromModelScope(spec);
         } else {
           await this.downloadFromArchive(spec, src);
@@ -341,6 +347,20 @@ export class FireRedModelDownloader {
     try {
       if (fs.existsSync(tmp)) fs.rmSync(tmp, { force: true });
       await this.downloadArchive(url, tmp);
+      if (spec.archiveSizeBytes && fs.statSync(tmp).size !== spec.archiveSizeBytes) {
+        throw new Error(
+          `archive size mismatch for ${spec.id}: expected ${spec.archiveSizeBytes}, got ${fs.statSync(tmp).size}`,
+        );
+      }
+      if (spec.archiveSha256) {
+        const digest = crypto
+          .createHash('sha256')
+          .update(fs.readFileSync(tmp))
+          .digest('hex');
+        if (digest !== spec.archiveSha256) {
+          throw new Error(`archive sha256 mismatch for ${spec.id}`);
+        }
+      }
 
       // 解包到独立进程（system tar），主进程事件循环不阻塞 → 不再「卡住」；
       // 失败回退 bundled decompress。strip 顶层目录、过滤 test_wavs。

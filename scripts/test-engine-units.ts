@@ -83,7 +83,16 @@ import {
   getQwenModelScopeTreeUrl,
   resolveQwenSelection,
 } from '../main/helpers/qwenModelCatalog';
-import { FIRERED_MODELS } from '../main/helpers/fireRedModelCatalog';
+import {
+  FIRERED_MODELS,
+  FIRERED_AED2_MODEL_ID,
+  getFireRedArchiveUrl,
+  getFireRedModelIds,
+  getFireRedRequiredFileExpectations,
+  getFireRedSupportedSources,
+  validateFireRedModelLayout,
+} from '../main/helpers/fireRedModelCatalog';
+import { getFireRedProgressKey } from '../main/helpers/fireRedModelDownloader';
 import {
   PARAKEET_MODELS,
   getParakeetArchiveUrl,

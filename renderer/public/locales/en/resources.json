@@ -290,6 +290,10 @@
         "fire-red-asr-large-zh-en": {
           "name": "FireRedASR-AED-L (int8, ~1.7GB)",
           "desc": "Strong Chinese-English code-switching and Chinese dialects; int8 quantized, CPU-friendly. Segment-level timestamps via VAD."
+        },
+        "fire-red-asr2-aed-zh-en": {
+          "name": "FireRedASR2-AED (int8, ~1.23GB)",
+          "desc": "FireRedASR2 AED int8 export for Chinese, dialects and code-switching. Runs locally on sherpa-onnx; SmartSub keeps VAD segment-level timestamps."
         }
       }
     },

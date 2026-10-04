@@ -290,6 +290,10 @@
         "fire-red-asr-large-zh-en": {
           "name": "FireRedASR-AED-L（int8，约 1.7GB）",
           "desc": "中英混说与多种中文方言识别强；int8 量化，CPU 友好。段级时间戳来自 VAD。"
+        },
+        "fire-red-asr2-aed-zh-en": {
+          "name": "FireRedASR2-AED（int8，约 1.23GB）",
+          "desc": "FireRedASR2 AED int8 导出包，适合中文、方言与中英混说。本地 sherpa-onnx 运行；SmartSub 保持 VAD 段级时间戳。"
         }
       }
     },
