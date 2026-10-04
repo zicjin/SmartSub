@@ -84,6 +84,8 @@ import {
   getInstalledFireRedModels,
   getFireRedModelsRoot,
   getFireRedArchiveUrl,
+  getFireRedSupportedSources,
+  validateFireRedModelLayout,
 } from './fireRedModelCatalog';
 import {
   getParakeetModelDownloader,
@@ -205,6 +207,7 @@ function resolveImportPlan(
     return {
       requiredFiles: FIRERED_MODELS[id].requiredFiles,
       destDir: path.join(getFireRedModelsRoot(), FIRERED_MODELS[id].dirName),
+      validate: (dir) => validateFireRedModelLayout(id, dir),
     };
   }
   if (engine === 'parakeet') {
@@ -820,6 +823,9 @@ export function setupSystemInfoManager(mainWindow: BrowserWindow) {
           const spec = FIRERED_MODELS[modelId as FireRedModelId];
           if (!spec) return { success: false, error: 'unknownModel' };
           if (source === 'modelscope') {
+            if (!getFireRedSupportedSources(spec.id).includes('modelscope')) {
+              return { success: false, error: 'sourceUnavailable' };
+            }
             return {
               success: true,
               url: `${getModelScopeBase()}/models/${spec.modelScopeRepo}`,

@@ -83,7 +83,15 @@ import {
   getQwenModelScopeTreeUrl,
   resolveQwenSelection,
 } from '../main/helpers/qwenModelCatalog';
-import { FIRERED_MODELS } from '../main/helpers/fireRedModelCatalog';
+import {
+  FIRERED_MODELS,
+  FIRERED_AED2_MODEL_ID,
+  getFireRedArchiveUrl,
+  getFireRedModelIds,
+  getFireRedRequiredFileExpectations,
+  getFireRedSupportedSources,
+  validateFireRedModelLayout,
+} from '../main/helpers/fireRedModelCatalog';
 import {
   PARAKEET_MODELS,
   getParakeetArchiveUrl,
@@ -2294,6 +2302,52 @@ eq(
   ['encoder.int8.onnx', 'decoder.int8.onnx', 'tokens.txt'],
   'import: fireRed requiredFiles',
 );
+eq(
+  getFireRedModelIds(),
+  ['fire-red-asr-large-zh-en', FIRERED_AED2_MODEL_ID],
+  'fireRed catalog keeps AED-L and AED2 as independent model IDs',
+);
+eq(
+  FIRERED_MODELS[FIRERED_AED2_MODEL_ID].archiveSizeBytes,
+  838589068,
+  'fireRed AED2 catalog records official archive size',
+);
+eq(
+  FIRERED_MODELS[FIRERED_AED2_MODEL_ID].archiveSha256,
+  '43015b3f1643a5688b4821e8ed323473d38b798c4ec291471fe00df1bcfc4f1c',
+  'fireRed AED2 catalog records official archive sha256',
+);
+eq(
+  FIRERED_MODELS[FIRERED_AED2_MODEL_ID].requiredFiles,
+  ['encoder.int8.onnx', 'decoder.int8.onnx', 'tokens.txt'],
+  'fireRed AED2 catalog uses the exported AED layout',
+);
+eq(
+  getFireRedSupportedSources(FIRERED_AED2_MODEL_ID),
+  ['ghproxy', 'github'],
+  'fireRed AED2 only exposes archive sources available for its release',
+);
+eq(
+  getFireRedArchiveUrl(FIRERED_MODELS[FIRERED_AED2_MODEL_ID], 'github'),
+  'https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-fire-red-asr2-zh_en-int8-2026-02-26.tar.bz2',
+  'fireRed AED2 archive URL is explicit and independent of AED-L',
+);
+{
+  const dir = fs.mkdtempSync(nodePath.join(os.tmpdir(), 'smartsub-firered-aed2-'));
+  try {
+    const files = getFireRedRequiredFileExpectations(FIRERED_AED2_MODEL_ID);
+    for (const file of files) {
+      const full = nodePath.join(dir, file.path);
+      fs.mkdirSync(nodePath.dirname(full), { recursive: true });
+      fs.writeFileSync(full, Buffer.alloc(file.size));
+    }
+    eq(validateFireRedModelLayout(FIRERED_AED2_MODEL_ID, dir).ok, true, 'fireRed AED2 complete layout is accepted');
+    fs.rmSync(nodePath.join(dir, 'tokens.txt'));
+    eq(validateFireRedModelLayout(FIRERED_AED2_MODEL_ID, dir).ok, false, 'fireRed AED2 incomplete layout is rejected');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+}
 
 // --- funasr download failure: surface manual fallback next step ---
 {

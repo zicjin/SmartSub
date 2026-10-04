@@ -8,6 +8,11 @@ import {
   getGithubProxyPrefix,
   getModelScopeBase,
 } from './config/downloadConfig';
+import {
+  validateModelLayoutWithSizes,
+  type LayoutCheckResult,
+  type ModelFileSizeExpectation,
+} from './modelImport';
 
 /** fireRed 模型根目录：单独覆盖 > 统一存储目录 > userData/models/firered */
 export function getFireRedModelsRoot(): string {
@@ -21,12 +26,17 @@ export function getFireRedModelsRoot(): string {
   return root;
 }
 
-/** fireRed 子模型标识（与本地子目录一一对应）。本期仅 AED-L int8。 */
-export type FireRedModelId = 'fire-red-asr-large-zh-en';
+/** fireRed 子模型标识（与本地子目录一一对应）。 */
+export type FireRedModelId =
+  | 'fire-red-asr-large-zh-en'
+  | 'fire-red-asr2-aed-zh-en';
 
 /** 默认（当前唯一）fireRed 模型。 */
 export const FIRERED_DEFAULT_MODEL_ID: FireRedModelId =
   'fire-red-asr-large-zh-en';
+
+export const FIRERED_AED2_MODEL_ID: FireRedModelId =
+  'fire-red-asr2-aed-zh-en';
 
 /**
  * fireRed 模型下载源：
@@ -57,6 +67,8 @@ export function getFireRedSourceOrder(
 export interface FireRedModelScopeFile {
   remote: string;
   local: string;
+  /** Optional fixed size from the source revision. */
+  size?: number;
 }
 
 /**
@@ -70,8 +82,16 @@ export interface FireRedModelSpec {
   dirName: string;
   /** 体积/硬件提示用（解包后约 1.74GB；tar.bz2 下载包约 1.4GB）。 */
   approxInstallBytes: number;
+  /** sherpa recognizer family. CTC packages are intentionally not catalogued. */
+  modelType: 'aed';
+  /** Release revision that produced this exact model artifact. */
+  revision?: string;
+  /** Exact archive metadata for deterministic downloads and diagnostics. */
+  archiveSizeBytes?: number;
+  archiveSha256?: string;
+  extractedSizeBytes?: number;
   /** ModelScope 仓库 id（逐文件国内源，官方镜像）。 */
-  modelScopeRepo: string;
+  modelScopeRepo?: string;
   /** ModelScope 逐文件清单（remote→local）。 */
   modelScopeFiles: FireRedModelScopeFile[];
   /** GitHub release 路径（owner/repo/releases/download/tag），用于整包源拼 URL。 */
@@ -82,6 +102,8 @@ export interface FireRedModelSpec {
   archiveInnerDir: string;
   /** 判定「已安装」必须存在的关键文件（相对 dirName）。 */
   requiredFiles: string[];
+  /** Exact bytes for required files when the export has a fixed layout. */
+  requiredFileSizes?: Record<string, number>;
 }
 
 const FIRERED_ARCHIVE =
@@ -96,6 +118,7 @@ export const FIRERED_MODELS: Record<FireRedModelId, FireRedModelSpec> = {
   'fire-red-asr-large-zh-en': {
     id: 'fire-red-asr-large-zh-en',
     dirName: 'fire-red-asr-large-zh-en',
+    modelType: 'aed',
     // encoder 1.29GB + decoder 425MB + tokens 70KB ≈ 1.74GB（实测字节累加）。
     approxInstallBytes: 1_740_000_000,
     modelScopeRepo: FIRERED_MS_REPO,
@@ -110,7 +133,39 @@ export const FIRERED_MODELS: Record<FireRedModelId, FireRedModelSpec> = {
     archiveInnerDir: FIRERED_INNER,
     requiredFiles: ['encoder.int8.onnx', 'decoder.int8.onnx', 'tokens.txt'],
   },
+  [FIRERED_AED2_MODEL_ID]: {
+    id: FIRERED_AED2_MODEL_ID,
+    dirName: FIRERED_AED2_MODEL_ID,
+    modelType: 'aed',
+    revision: '2026-02-26',
+    // Official sherpa-onnx asr-models release artifact.
+    archiveSizeBytes: 838_589_068,
+    archiveSha256:
+      '43015b3f1643a5688b4821e8ed323473d38b798c4ec291471fe00df1bcfc4f1c',
+    // Required model files only; test_wavs and README are excluded on install.
+    extractedSizeBytes: 1_234_657_933,
+    approxInstallBytes: 1_234_657_933,
+    modelScopeFiles: [],
+    releasePath: FIRERED_RELEASE_PATH,
+    archiveName: 'sherpa-onnx-fire-red-asr2-zh_en-int8-2026-02-26.tar.bz2',
+    archiveInnerDir: 'sherpa-onnx-fire-red-asr2-zh_en-int8-2026-02-26',
+    requiredFiles: ['encoder.int8.onnx', 'decoder.int8.onnx', 'tokens.txt'],
+    requiredFileSizes: {
+      'encoder.int8.onnx': 817_286_833,
+      'decoder.int8.onnx': 417_291_928,
+      'tokens.txt': 79_172,
+    },
+  },
 };
+
+export function getFireRedSupportedSources(
+  id: FireRedModelId,
+): FireRedModelSource[] {
+  const spec = FIRERED_MODELS[id];
+  return spec.modelScopeRepo && spec.modelScopeFiles.length > 0
+    ? [...FIRERED_SOURCE_ORDER]
+    : ['ghproxy', 'github'];
+}
 
 /** 整包源（ghproxy/github）的 tar.bz2 下载 URL。 */
 export function getFireRedArchiveUrl(
@@ -126,11 +181,13 @@ export function getFireRedModelScopeFileUrl(
   spec: FireRedModelSpec,
   remote: string,
 ): string {
+  if (!spec.modelScopeRepo) throw new Error(`ModelScope unavailable for ${spec.id}`);
   return `${getModelScopeBase()}/models/${spec.modelScopeRepo}/resolve/master/${remote}`;
 }
 
 /** ModelScope 文件树 API（取各文件 size 以计算总进度）。 */
 export function getFireRedModelScopeTreeUrl(spec: FireRedModelSpec): string {
+  if (!spec.modelScopeRepo) throw new Error(`ModelScope unavailable for ${spec.id}`);
   return `${getModelScopeBase()}/api/v1/models/${spec.modelScopeRepo}/repo/files?Revision=master&Recursive=true`;
 }
 
@@ -142,9 +199,46 @@ export function getFireRedModelDir(id: FireRedModelId): string {
 
 export function isFireRedModelInstalled(id: FireRedModelId): boolean {
   const dir = path.join(getFireRedModelsRoot(), FIRERED_MODELS[id].dirName);
-  return FIRERED_MODELS[id].requiredFiles.every((f) =>
-    fs.existsSync(path.join(dir, f)),
-  );
+  return validateFireRedModelLayout(id, dir).ok;
+}
+
+export function getFireRedRequiredFileExpectations(
+  id: FireRedModelId,
+): ModelFileSizeExpectation[] {
+  const spec = FIRERED_MODELS[id];
+  return spec.requiredFiles.map((file) => ({
+    path: file,
+    size: spec.requiredFileSizes?.[file] ?? 0,
+  }));
+}
+
+/** Validate model identity as well as layout; AED2 CTC/PyTorch packages fail here. */
+export function validateFireRedModelLayout(
+  id: FireRedModelId,
+  dir: string,
+): LayoutCheckResult {
+  const spec = FIRERED_MODELS[id];
+  if (!spec.requiredFileSizes) {
+    return {
+      ok: spec.requiredFiles.every((file) => {
+        try {
+          const stat = fs.statSync(path.join(dir, file));
+          return stat.isFile() && stat.size > 0;
+        } catch {
+          return false;
+        }
+      }),
+      missing: spec.requiredFiles.filter((file) => {
+        try {
+          const stat = fs.statSync(path.join(dir, file));
+          return !stat.isFile() || stat.size <= 0;
+        } catch {
+          return true;
+        }
+      }),
+    };
+  }
+  return validateModelLayoutWithSizes(dir, getFireRedRequiredFileExpectations(id));
 }
 
 /** 两件套 + tokens 绝对路径（供 adapter 注入 worker 模型请求）。 */
