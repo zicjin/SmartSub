@@ -4,7 +4,7 @@
  * 文件拖放由 DubbingPanel 整页接管。
  */
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {

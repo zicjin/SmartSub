@@ -33,7 +33,7 @@ import { cn } from 'lib/utils';
 import { validateRefineProviderConfig } from 'lib/subtitleRefineValidation';
 import { isSherpaEngine } from 'lib/subtitleOutcome';
 import type { TaskTypeDef } from 'lib/taskTypes';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 
 interface Provider {
   id: string;

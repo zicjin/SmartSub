@@ -25,7 +25,7 @@ import {
   CloudDownload,
   Compass,
   Cpu,
-  Github,
+  GitFork,
   HelpCircle,
   Home,
   Keyboard,
@@ -63,7 +63,7 @@ import { TASK_TYPES } from 'lib/taskTypes';
 import { useRouter } from 'next/router';
 import { toast } from 'sonner';
 import { Toaster } from '@/components/ui/sonner';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { useTheme } from 'next-themes';
 import { UpdateDialog } from './UpdateDialog';
 import { LogDialog } from './LogDialog';
@@ -1057,7 +1057,7 @@ const Layout = ({ children }) => {
                 <DropdownMenuItem
                   onClick={() => openUrl('https://github.com/buxuku/SmartSub')}
                 >
-                  <Github className="mr-2 h-4 w-4" />
+                  <GitFork className="mr-2 h-4 w-4" />
                   {t('help.github')}
                 </DropdownMenuItem>
               </DropdownMenuContent>

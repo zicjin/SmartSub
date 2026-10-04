@@ -1,6 +1,6 @@
 import React from 'react';
 import { Upload } from 'lucide-react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 
 interface GlobalDropOverlayProps {
   isDragging: boolean;

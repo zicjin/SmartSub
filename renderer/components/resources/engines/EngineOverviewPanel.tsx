@@ -4,7 +4,7 @@
  * 统一三个配置页（引擎/翻译/声音）的落地动线。
  */
 import React from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Check, Cloud, HardDrive } from 'lucide-react';
 import { cn } from 'lib/utils';

@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Languages, Plus, Trash2, RefreshCw } from 'lucide-react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

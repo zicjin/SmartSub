@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Copy, Download } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';

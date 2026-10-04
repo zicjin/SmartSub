@@ -4,7 +4,7 @@ const os = require('node:os');
 const path = require('node:path');
 const vm = require('node:vm');
 const { execFileSync } = require('node:child_process');
-const ts = require('typescript');
+const ts = require(process.cwd() + '/scripts/typescript-compat.cjs');
 const ffmpeg = require('ffmpeg-static');
 
 const cache = new Map();

@@ -1,6 +1,6 @@
 import { useEffect, useId, useState, useSyncExternalStore } from 'react';
 import { useNavigationGuard } from '../context/NavigationGuardContext';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import {
   ToolboxQueue,
   ToolboxQueueInput,

@@ -22,7 +22,7 @@ export function useComposeDocument(key: string, initial: ComposeDocument) {
   const saved = useRef(cloneCompose(initial));
   const touched = useRef(false);
   const pending = useRef<ComposeDraft | null>(null);
-  const job = useRef<ComposeJobReference | null>();
+  const job = useRef<ComposeJobReference | null>(null);
   const readFailed = useRef(false);
   const initialized = useRef(false);
   const ownsLock = useRef(false);

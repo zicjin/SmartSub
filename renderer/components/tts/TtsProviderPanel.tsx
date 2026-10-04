@@ -6,7 +6,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import type { ProviderTextDrafts } from '../../hooks/useProviderPersistence';
 import { buildTtsViews } from '../../../types/ttsProvider';
 import type { TtsVoiceEntry } from '../../../types/ttsVoice';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import {
   AlertTriangle,
   Check,

@@ -1,6 +1,4 @@
 import { AzureOpenAI } from 'openai';
-import http from 'http';
-import https from 'https';
 import { TRANSLATION_JSON_SCHEMA } from '../translate/constants/schema';
 import {
   TaskCancelledError,
@@ -77,9 +75,6 @@ export async function translateWithAzureOpenAI(
       ...(options?.beforeRequest ? { maxRetries: 0 } : {}),
       endpoint: baseURL,
       apiKey: provider.apiKey,
-      // AzureOpenAI uses the same SDK-owned default agents as OpenAI.
-      httpAgent:
-        url.protocol === 'https:' ? https.globalAgent : http.globalAgent,
       deployment: deploymentName,
       apiVersion: apiVersion,
     });

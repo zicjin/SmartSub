@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Button } from '@/components/ui/button';
 import StepGuide from '@/components/StepGuide';
 import { Video, FileText, FolderOpen, PenLine, Save } from 'lucide-react';

@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from './ui/select';
 import { ScrollArea } from './ui/scroll-area';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Copy, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 

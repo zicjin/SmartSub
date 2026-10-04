@@ -5,7 +5,7 @@ import { qualityIssueContext } from '../../lib/qualityIssueContext';
 import type { QualityIssue } from '../../../types/qualityReview';
 import type { Subtitle } from '../../hooks/useSubtitles';
 
-jest.mock('next-i18next', () => ({
+jest.mock('next-i18next/pages', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 const issue: QualityIssue = {

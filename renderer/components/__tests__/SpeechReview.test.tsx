@@ -7,7 +7,7 @@ import MissedSpeechControls, {
 } from '../subtitle/MissedSpeechControls';
 import type { IFiles } from '../../../types';
 
-jest.mock('next-i18next', () => ({
+jest.mock('next-i18next/pages', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 jest.mock('sonner', () => ({

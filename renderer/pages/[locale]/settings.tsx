@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import {
   Select,
   SelectContent,
@@ -22,7 +22,7 @@ import {
   Upload,
   Info,
   RefreshCw,
-  Github,
+  GitFork,
   Globe,
   MessageSquareWarning,
   ScrollText,
@@ -1696,7 +1696,7 @@ const Settings = () => {
                 className="gap-1.5 text-muted-foreground hover:text-foreground"
                 onClick={() => openUrl('https://github.com/buxuku/SmartSub')}
               >
-                <Github className="h-4 w-4" />
+                <GitFork className="h-4 w-4" />
                 {t('common:help.github')}
               </Button>
               <Button

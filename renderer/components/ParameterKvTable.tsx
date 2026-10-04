@@ -1,5 +1,5 @@
 import React, { useCallback, useId, useRef, useState } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Plus, Trash2 } from 'lucide-react';
 import type { ParameterDefinition, ParameterValue } from '../../types/provider';
 import {

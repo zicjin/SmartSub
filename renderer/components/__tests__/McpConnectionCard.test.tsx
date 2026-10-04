@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { toast } from 'sonner';
 import McpConnectionCard from '../settings/McpConnectionCard';
 
-jest.mock('next-i18next', () => ({
+jest.mock('next-i18next/pages', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 jest.mock('sonner', () => ({ toast: { success: jest.fn() } }));

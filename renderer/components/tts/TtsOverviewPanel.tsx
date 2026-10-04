@@ -4,7 +4,7 @@
  * 向新用户解释三类声音来源的差别与下一步动作。
  */
 import React from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Check, Cloud, HardDrive, Mic2 } from 'lucide-react';
 import { cn } from 'lib/utils';

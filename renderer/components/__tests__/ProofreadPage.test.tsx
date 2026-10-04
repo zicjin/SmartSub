@@ -20,7 +20,7 @@ const mockConfirm = (_message: string, undo: () => void) => {
 };
 const mockTranslate = (key: string) => key;
 jest.mock('next/router', () => ({ useRouter: () => mockRouter }));
-jest.mock('next-i18next', () => ({
+jest.mock('next-i18next/pages', () => ({
   useTranslation: () => ({ t: mockTranslate }),
 }));
 jest.mock('../../lib/get-static', () => ({

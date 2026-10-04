@@ -5,7 +5,7 @@
 
 import React from 'react';
 import path from 'path';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Button } from '@/components/ui/button';
 import { Video, FileText, AudioLines, X } from 'lucide-react';
 import type { VideoInfo, SubtitleInfo } from '../../../types/subtitleMerge';

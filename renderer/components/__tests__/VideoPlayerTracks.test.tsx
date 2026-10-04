@@ -2,7 +2,7 @@ import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import VideoPlayer from '../subtitle/VideoPlayer';
 
-jest.mock('next-i18next', () => ({
+jest.mock('next-i18next/pages', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 jest.mock('react-player', () => {

@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { RefreshCw } from 'lucide-react';
 import { Button } from '../ui/button';
 import type { useSettingsPersistence } from '../../hooks/useSettingsPersistence';

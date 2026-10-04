@@ -237,7 +237,7 @@ export const downloadConfig = z
         z.object({
           url: z.string().url(),
           expandPlaylist: z.boolean().optional(),
-          meta: z.record(z.unknown()).optional(),
+          meta: z.record(z.string(), z.unknown()).optional(),
         }),
       )
       .min(1),

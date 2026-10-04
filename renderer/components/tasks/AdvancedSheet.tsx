@@ -48,7 +48,7 @@ import {
   supportsTaskVadField,
   type SubtitleOutcome,
 } from 'lib/subtitleOutcome';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import {
   FASTER_WHISPER_ADVANCED_PARAM_SPECS,
   isValidFasterWhisperAdvancedParamValue,

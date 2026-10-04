@@ -96,7 +96,7 @@ export function AssistantProvider({ children }: { children: React.ReactNode }) {
     page: '',
     capturedAt: 0,
   });
-  const timer = useRef<ReturnType<typeof setTimeout>>();
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const notify = useCallback(() => {
     if (timer.current) return;
     timer.current = setTimeout(() => {

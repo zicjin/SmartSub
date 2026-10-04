@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import DownloadSourceSelector from '@/components/resources/engines/DownloadSourceSelector';
 import { Download, Loader2 } from 'lucide-react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 
 interface ModelQuickDownloadDialogProps {
   open: boolean;

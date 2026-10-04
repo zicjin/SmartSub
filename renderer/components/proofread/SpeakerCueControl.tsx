@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useRef, useId } from 'react';
 import { Crown, UserRoundPlus, Users, X } from 'lucide-react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { diffArrays } from 'diff';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Check, X, RotateCcw, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { InlineAiSuggestion } from '../../lib/inlineAi';

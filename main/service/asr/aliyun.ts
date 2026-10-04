@@ -133,7 +133,7 @@ async function postFlashOnce(
     return await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/octet-stream' },
-      body,
+      body: body as unknown as BodyInit,
       signal: controller.signal,
     });
   } catch (error) {

@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 export function useAssistantPanelLayout(open: boolean, close: () => void) {
   const panel = useRef<HTMLElement>(null);
   const resizing = useRef(false);
-  const cleanup = useRef<() => void>();
+  const cleanup = useRef<() => void | undefined>(undefined);
   const [width, setWidth] = useState(440);
   const [maximum, setMaximum] = useState(800);
   const clamp = (value: number) =>

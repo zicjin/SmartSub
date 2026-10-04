@@ -8,7 +8,7 @@ import { useVoicePreview } from './useVoicePreview';
 import { useDubbingCueDrafts } from './useDubbingCueDrafts';
 import { isAudioPath } from 'lib/utils';
 import { isProviderConfigured } from 'lib/providerUtils';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import type { Provider } from '../../main/translate/types';
 import { aiPrompt } from '../lib/inlineAi';
 import { invokeDubbingOperation } from '../lib/dubbingOperation';
@@ -2069,34 +2069,32 @@ export function useDubbing(options?: {
 
   const canStart = Boolean(
     session &&
-      activeEngine &&
-      activeVoice &&
-      !unsupportedLanguage &&
-      !running &&
-      !exporting &&
-      !speakerUpdating &&
-      !configBlockedRef.current() &&
-      missingSpeakerVoiceIds.length === 0 &&
-      conflictingSpeakerIds.length === 0 &&
-      invalidCueOverrideCount === 0,
+    activeEngine &&
+    activeVoice &&
+    !unsupportedLanguage &&
+    !running &&
+    !exporting &&
+    !speakerUpdating &&
+    !configBlockedRef.current() &&
+    missingSpeakerVoiceIds.length === 0 &&
+    conflictingSpeakerIds.length === 0 &&
+    invalidCueOverrideCount === 0,
   );
   const canExport = Boolean(
     session &&
-      conflictingSpeakerIds.length === 0 &&
-      summary.generated > 0 &&
-      summary.overlong === 0 &&
-      summary.failed === 0 &&
-      summary.needsUpdate === 0 &&
-      cues.every(
-        (cue) =>
-          !cue.text.trim() ||
-          cue.status === 'done' ||
-          cue.status === 'accepted',
-      ) &&
-      !running &&
-      !exporting &&
-      !speakerUpdating &&
-      !configBlockedRef.current(),
+    conflictingSpeakerIds.length === 0 &&
+    summary.generated > 0 &&
+    summary.overlong === 0 &&
+    summary.failed === 0 &&
+    summary.needsUpdate === 0 &&
+    cues.every(
+      (cue) =>
+        !cue.text.trim() || cue.status === 'done' || cue.status === 'accepted',
+    ) &&
+    !running &&
+    !exporting &&
+    !speakerUpdating &&
+    !configBlockedRef.current(),
   );
 
   return {

@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const Module = require('module');
-const ts = require('typescript');
+const ts = require(process.cwd() + '/scripts/typescript-compat.cjs');
 const args = Object.fromEntries(
   process.argv
     .slice(2)

@@ -8,7 +8,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 
 export function ThemeToggle() {
   const { setTheme, theme } = useTheme();

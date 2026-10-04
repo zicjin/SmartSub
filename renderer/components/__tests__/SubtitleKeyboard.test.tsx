@@ -5,7 +5,7 @@ import type { Subtitle } from '../../hooks/useSubtitles';
 import type { InlineAiControl } from '../../hooks/useInlineAi';
 import { cueSnapshot, cueStructure } from '../../lib/inlineAi';
 
-jest.mock('next-i18next', () => ({
+jest.mock('next-i18next/pages', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 jest.mock('@tanstack/react-virtual', () => ({

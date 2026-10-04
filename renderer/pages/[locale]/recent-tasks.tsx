@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import {
   ArrowLeft,
   ChevronLeft,

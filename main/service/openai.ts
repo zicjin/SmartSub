@@ -1,6 +1,4 @@
 import OpenAI from 'openai';
-import http from 'http';
-import https from 'https';
 import { zodResponseFormat } from 'openai/helpers/zod';
 import { TranslationResultSchema } from '../translate/constants/schema';
 import { ParameterProcessor } from '../helpers/parameterProcessor';
@@ -250,7 +248,7 @@ async function callWithJsonSchema(
   console.log('Using JSON Schema API with zod schema');
   await options?.beforeRequest?.();
   throwIfSignalCancelled(options?.signal);
-  const completion = await openai.beta.chat.completions.parse(
+  const completion = await openai.chat.completions.parse(
     {
       ...baseParams,
       response_format: zodResponseFormat(
@@ -330,10 +328,6 @@ export async function translateWithOpenAI(
       ...(options?.beforeRequest ? { maxRetries: 0 } : {}),
       baseURL: normalizedApiUrl,
       apiKey: provider.apiKey,
-      // The SDK's own default agent bypasses the application's proxy settings.
-      httpAgent: normalizedApiUrl.startsWith('https:')
-        ? https.globalAgent
-        : http.globalAgent,
       defaultHeaders: {
         ...customHeaders, // Apply custom headers from parameter processor
       },

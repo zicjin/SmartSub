@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Separator } from '@/components/ui/separator';
 import { Info, Cpu } from 'lucide-react';
 import type { MacAccelMode } from '../../../../types/addon';

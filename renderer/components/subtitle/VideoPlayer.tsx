@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ReactPlayer from 'react-player';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { isAudioPath } from 'lib/utils';
 
 interface VideoPlayerProps {

@@ -4,7 +4,7 @@ const fsp = require('node:fs/promises');
 const os = require('node:os');
 const path = require('node:path');
 const vm = require('node:vm');
-const ts = require('typescript');
+const ts = require(process.cwd() + '/scripts/typescript-compat.cjs');
 
 function harness(directory) {
   const cache = new Map();

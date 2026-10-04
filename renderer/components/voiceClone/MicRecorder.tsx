@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Loader2, Mic, Play, RotateCcw, Square, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from 'lib/utils';

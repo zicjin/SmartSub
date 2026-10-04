@@ -8,7 +8,7 @@ import {
 } from '@testing-library/react';
 import FontSelector from '../subtitleMerge/FontSelector';
 
-jest.mock('next-i18next', () => ({
+jest.mock('next-i18next/pages', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 // Real Radix layout, focus and dismissal are exercised by compose-font-menu E2E.

@@ -7,7 +7,7 @@ const path = require('node:path');
 const http = require('node:http');
 const Module = require('node:module');
 const { test, after } = require('node:test');
-const ts = require('typescript');
+const ts = require(process.cwd() + '/scripts/typescript-compat.cjs');
 const React = require('react');
 const { renderToStaticMarkup } = require('react-dom/server');
 

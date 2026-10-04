@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useRef,
 } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Button } from '@/components/ui/button';
 import {
   AlertDialog,

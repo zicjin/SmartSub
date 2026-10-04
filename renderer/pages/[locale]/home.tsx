@@ -72,7 +72,7 @@ import EnvReadiness, { type EnvRow } from '@/components/launchpad/EnvReadiness';
 import AiAssistantGuide from '@/components/launchpad/AiAssistantGuide';
 import { getWorkItemStatus, getWorkItemTarget } from 'lib/workItemUtils';
 import { getStaticPaths, makeStaticProperties } from '../../lib/get-static';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import type { WorkItem } from '../../../types/workItem';
 import type { TaskRecipe } from '../../../types/recipe';
 
@@ -265,7 +265,7 @@ export default function LaunchpadPage() {
         );
         const ttsModelReady = Boolean(
           ttsModelStatus?.engineInstalled === true &&
-            ttsModelStatus?.models?.some((m: any) => m.installed),
+          ttsModelStatus?.models?.some((m: any) => m.installed),
         );
         setTtsReady(ttsProviderReady || ttsModelReady);
         setUserRecipes(Array.isArray(recipes) ? recipes : []);

@@ -3,7 +3,7 @@ import { fireEvent, render } from '@testing-library/react';
 import SubtitleCanvas from '../subtitleMerge/SubtitleCanvas';
 import { getDefaultStyle } from '../subtitleMerge/constants';
 
-jest.mock('next-i18next', () => ({
+jest.mock('next-i18next/pages', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 

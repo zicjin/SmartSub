@@ -55,8 +55,7 @@ interface XfyunPendingOrder {
 /** 读全表并惰性清理过期记录（写回仅在有变化时）。 */
 function readPendingOrders(): Record<string, XfyunPendingOrder> {
   const raw = store.get(PENDING_ORDERS_KEY) as
-    | Record<string, XfyunPendingOrder>
-    | undefined;
+    Record<string, XfyunPendingOrder> | undefined;
   if (!raw || typeof raw !== 'object') return {};
   const now = Date.now();
   const alive: Record<string, XfyunPendingOrder> = {};
@@ -144,7 +143,7 @@ async function postXfyunOnce(
     return await fetch(url, {
       method: 'POST',
       headers,
-      body,
+      body: body as unknown as BodyInit,
       signal: controller.signal,
     });
   } catch (error) {
@@ -242,8 +241,7 @@ async function uploadOrder(options: {
       const cls = classifyXfyunCode(res.status, code ?? null);
       if (cls === 'success') {
         const content = data?.content as
-          | { orderId?: unknown; taskEstimateTime?: unknown }
-          | undefined;
+          { orderId?: unknown; taskEstimateTime?: unknown } | undefined;
         const orderId = String(content?.orderId ?? '').trim();
         if (!orderId) {
           throw new Error('Xfyun ASR upload succeeded but no orderId returned');
@@ -290,8 +288,7 @@ async function uploadOrder(options: {
 }
 
 type XfyunPollOutcome =
-  | { kind: 'done'; result: AsrTranscribeResult }
-  | { kind: 'order-gone' };
+  { kind: 'done'; result: AsrTranscribeResult } | { kind: 'order-gone' };
 
 /** 按梯度间隔取下一次轮询等待时长。 */
 function pollIntervalMs(queryIndex: number): number {

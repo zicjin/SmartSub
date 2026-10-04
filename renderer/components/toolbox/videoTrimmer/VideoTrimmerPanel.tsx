@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import ReactPlayer from 'react-player';
 import { Film, Play, Pause, RotateCcw, Scissors } from 'lucide-react';
 import { Button } from '@/components/ui/button';

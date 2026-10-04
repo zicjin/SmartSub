@@ -11,7 +11,7 @@ import type { AssistantSession } from '../../../types/assistant';
 import type { AutomationJob } from '../../../types/automation';
 import AssistantMarkdown from '../assistant/AssistantMarkdown';
 
-jest.mock('next-i18next', () => ({
+jest.mock('next-i18next/pages', () => ({
   useTranslation: () => ({
     t: (key: string, options?: { shortcut?: string }) =>
       key === 'assistant.inputHint'

@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { TooltipProvider } from '@/components/ui/tooltip';

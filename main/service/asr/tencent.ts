@@ -68,7 +68,7 @@ async function postFlashOnce(
         Authorization: authorization,
         'Content-Type': 'application/octet-stream',
       },
-      body,
+      body: body as unknown as BodyInit,
       signal: controller.signal,
     });
   } catch (error) {

@@ -99,7 +99,7 @@ import {
 } from '../../../../types/taskConfig';
 import { validateTaskConfigReady } from 'lib/taskReadiness';
 import { getProofreadSourcePath } from '../../../../types/subtitleOutput';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { toast } from 'sonner';
 
 export default function TaskPage() {
@@ -787,13 +787,16 @@ export default function TaskPage() {
   const [releaseAllGate, setReleaseAllGate] = useState<
     'subtitle' | 'dubbing' | null
   >(null);
-  const gateReleaseToken = useRef<object>();
+  const gateReleaseToken = useRef<object | undefined>(undefined);
   const [gateReleaseError, setGateReleaseError] = useState<string | null>(null);
   const [gateReleasing, setGateReleasing] = useState(false);
-  const lastGateRelease = useRef<{
-    gate: 'subtitle' | 'dubbing';
-    fileUuids?: string[];
-  }>();
+  const lastGateRelease = useRef<
+    | {
+        gate: 'subtitle' | 'dubbing';
+        fileUuids?: string[];
+      }
+    | undefined
+  >(undefined);
   useEffect(() => {
     gateReleaseToken.current = undefined;
     setGateReleaseError(null);
@@ -1527,7 +1530,7 @@ export default function TaskPage() {
             (() => {
               const hasActiveManuscript = Boolean(
                 formData?.manuscriptPath &&
-                  formData.manuscriptPath !== '__none__',
+                formData.manuscriptPath !== '__none__',
               );
               return (
                 <Button

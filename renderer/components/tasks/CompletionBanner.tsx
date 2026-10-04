@@ -25,7 +25,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import type { TaskTypeDef } from 'lib/taskTypes';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import {
   getFileStages,
   isFileTerminal,

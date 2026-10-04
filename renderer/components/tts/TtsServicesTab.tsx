@@ -8,7 +8,7 @@
  * 创建 / 导入 / 从平台取回）。右栏 = 选中条目的管理面板；「总览」= 新手落地页。
  */
 import React, { useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { BookOpenText } from 'lucide-react';
 import { cn } from 'lib/utils';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import type { UseFormReturn } from 'react-hook-form';
 import { useGlossaries } from 'hooks/useGlossaries';
 import type { IFormData } from '../../../types/types';

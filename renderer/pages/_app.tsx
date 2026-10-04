@@ -1,6 +1,6 @@
 import React from 'react';
 import type { AppProps } from 'next/app';
-import { appWithTranslation } from 'next-i18next';
+import { appWithTranslation } from 'next-i18next/pages';
 import Layout from '@/components/Layout';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { getStaticPaths, makeStaticProperties } from '../lib/get-static';

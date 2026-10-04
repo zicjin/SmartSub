@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/select';
 import { FileText, ChevronDown } from 'lucide-react';
 import { cn } from 'lib/utils';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import {
   SUBTITLE_OUTPUT_FORMATS,
   resolveSubtitleOutputFormats,

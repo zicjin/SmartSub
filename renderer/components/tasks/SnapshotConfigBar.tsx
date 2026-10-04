@@ -25,7 +25,7 @@ import { isSubtitleFile } from 'lib/utils';
 import type { TaskTypeDef } from 'lib/taskTypes';
 import { useTtsEngineOptions } from 'hooks/useTtsEngineOptions';
 import { useCustomLanguages } from 'hooks/useCustomLanguages';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { useGlossaries } from 'hooks/useGlossaries';
 import { getCustomLanguageName } from '../../../types/language';
 import { isTaskSnapshotTranslationEnabled } from '../../../types/taskSnapshot';

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { AlertTriangle, ChevronDown, ChevronUp, Play } from 'lucide-react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import {

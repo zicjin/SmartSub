@@ -6,7 +6,7 @@ import React, {
   useMemo,
 } from 'react';
 import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { getStaticPaths, makeStaticProperties } from '../../lib/get-static';
 import ProofreadImport from '@/components/proofread/ProofreadImport';
 import ProofreadFileList from '@/components/proofread/ProofreadFileList';

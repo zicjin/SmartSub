@@ -1,5 +1,5 @@
 import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import {
   Check,
@@ -81,8 +81,10 @@ const VoiceLibrary = React.forwardRef<
     const [saving, setSaving] = useState(false);
     const [selectionError, setSelectionError] = useState<string | null>(null);
     const pending = useRef(false);
-    const hoverTimer = useRef<ReturnType<typeof setTimeout>>();
-    const hoverId = useRef<string>();
+    const hoverTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
+      undefined,
+    );
+    const hoverId = useRef<string | undefined>(undefined);
     // The sheet portal mounts after opening; its scroll node must trigger a render.
     const [parent, setParent] = useState<HTMLDivElement | null>(null);
     const listId = useId();

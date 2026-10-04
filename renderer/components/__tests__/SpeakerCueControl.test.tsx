@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import SpeakerCueControl from '../proofread/SpeakerCueControl';
 import type { Subtitle } from '../../hooks/useSubtitles';
 
-jest.mock('next-i18next', () => ({
+jest.mock('next-i18next/pages', () => ({
   useTranslation: () => ({
     t: (key: string, values?: { name?: string }) =>
       `${key}${values?.name ? ` ${values.name}` : ''}`,

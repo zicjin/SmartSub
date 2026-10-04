@@ -1,5 +1,5 @@
 import React, { memo, useMemo, useId } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { AlertTriangle } from 'lucide-react';
 import { subtitleHealth } from '../../lib/subtitleHealth';
 

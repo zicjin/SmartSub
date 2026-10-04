@@ -4,7 +4,7 @@
  * TtsOverviewPanel 同构，统一三个配置页的落地动线。
  */
 import React from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Check, Gift, Sparkles, Globe2 } from 'lucide-react';
 import { cn } from 'lib/utils';

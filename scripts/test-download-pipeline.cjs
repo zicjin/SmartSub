@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const vm = require('node:vm');
-const ts = require('typescript');
+const ts = require(process.cwd() + '/scripts/typescript-compat.cjs');
 
 const root = fs.mkdtempSync(path.join(os.tmpdir(), 'smartsub-download-unit-'));
 const media = path.join(root, 'lesson.mp4');

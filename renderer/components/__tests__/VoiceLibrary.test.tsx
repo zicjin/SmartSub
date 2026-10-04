@@ -6,7 +6,7 @@ import {
   parseTtsVoiceMetadata,
 } from '../../../types/ttsVoice';
 import { loadTtsEngineOptions } from '../../hooks/useTtsEngineOptions';
-jest.mock('next-i18next', () => ({
+jest.mock('next-i18next/pages', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 jest.mock('@tanstack/react-virtual', () => ({

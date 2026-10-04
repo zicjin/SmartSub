@@ -1,5 +1,3 @@
-import http from 'http';
-import https from 'https';
 import OpenAI from 'openai';
 import { modelRequestMessages } from './messageContent';
 import type { Provider } from '../../types/provider';
@@ -36,9 +34,6 @@ export async function requestAssistant(
     baseURL,
     maxRetries: 0,
     timeout: 120000,
-    httpAgent: baseURL.startsWith('https:')
-      ? https.globalAgent
-      : http.globalAgent,
     defaultHeaders: Object.fromEntries(
       Object.entries(custom.headers).map(([key, value]) => [
         key,

@@ -19,7 +19,7 @@ import {
   promptSupportsEchoAnchoring,
   isThinkingOnlyModelName,
 } from '../../types';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Switch } from '@/components/ui/switch';
 import {
   Select,

@@ -7,7 +7,7 @@ jest.mock('../../context/NavigationGuardContext', () => ({
 jest.mock('../../hooks/useConfirmOrUndo', () => ({
   useConfirmOrUndo: () => jest.fn(),
 }));
-jest.mock('next-i18next', () => ({
+jest.mock('next-i18next/pages', () => ({
   useTranslation: () => ({
     t: (key: string, options?: any) => options?.defaultValue || key,
   }),

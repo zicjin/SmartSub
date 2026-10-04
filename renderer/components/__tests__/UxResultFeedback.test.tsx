@@ -5,7 +5,7 @@ import ToolboxFinishBar from '../toolbox/common/ToolboxFinishBar';
 jest.mock('next/router', () => ({
   useRouter: () => ({ query: {}, push: jest.fn() }),
 }));
-jest.mock('next-i18next', () => ({
+jest.mock('next-i18next/pages', () => ({
   useTranslation: () => ({
     t: (key: string, values?: object) =>
       `${key}${values ? JSON.stringify(values) : ''}`,

@@ -1,5 +1,5 @@
 import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Check, ChevronsUpDown, RotateCcw, Search } from 'lucide-react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import {

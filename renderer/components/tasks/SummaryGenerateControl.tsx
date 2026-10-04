@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import type { UseFormReturn } from 'react-hook-form';
 import { FOLLOW_TRANSLATION_PROVIDER } from '../../../types/summaryPrompt';
 import {

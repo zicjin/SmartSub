@@ -7,7 +7,7 @@ import {
   UserRoundPlus,
   Users,
 } from 'lucide-react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
@@ -43,10 +43,7 @@ import {
 } from '../../../types/proofreadData';
 
 export type SpeakerFilter =
-  | 'all'
-  | 'unassigned'
-  | 'overlap'
-  | `speaker:${number}`;
+  'all' | 'unassigned' | 'overlap' | `speaker:${number}`;
 
 interface PendingBulkAction {
   mode: 'move' | 'merge';

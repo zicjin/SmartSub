@@ -7,7 +7,7 @@ const http = require('node:http');
 const https = require('node:https');
 const Module = require('node:module');
 const path = require('node:path');
-const ts = require('typescript');
+const ts = require(process.cwd() + '/scripts/typescript-compat.cjs');
 
 const repoRoot = path.resolve(__dirname, '..');
 const testHost = 'smartsub-translation-proxy.invalid';

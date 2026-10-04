@@ -16,7 +16,7 @@ import {
   Film,
   RotateCcw,
 } from 'lucide-react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { cn } from 'lib/utils';
 import { WIZARD_DROP_KEY } from '@/lib/recipes';
 import { toast } from 'sonner';

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { toast } from 'sonner';
 import { CheckCircle2, CloudDownload, Loader2, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';

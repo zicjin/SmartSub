@@ -12,7 +12,7 @@ import React, {
   useState,
 } from 'react';
 import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { toast } from 'sonner';
 import {
   AlertCircle,
@@ -530,9 +530,9 @@ export default function DownloadPanel() {
     () =>
       Boolean(
         item?.downloadEntries?.length &&
-          item.downloadEntries.every(
-            (e) => e.status === 'done' || e.status === 'error',
-          ),
+        item.downloadEntries.every(
+          (e) => e.status === 'done' || e.status === 'error',
+        ),
       ),
     [item],
   );

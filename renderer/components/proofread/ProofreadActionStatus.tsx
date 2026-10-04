@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Loader2, RefreshCw } from 'lucide-react';
 import { Button } from '../ui/button';
 

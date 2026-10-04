@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useCallback, FC, ReactNode } from 'react';
 import { toast } from 'sonner';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import DownloadSourcePopover, {
   useDownloadSource,
 } from '@/components/resources/engines/DownloadSourcePopover';

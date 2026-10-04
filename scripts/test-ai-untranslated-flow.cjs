@@ -9,7 +9,7 @@
 const fs = require('fs');
 const path = require('path');
 const Module = require('module');
-const ts = require('typescript');
+const ts = require(process.cwd() + '/scripts/typescript-compat.cjs');
 
 const repoRoot = path.resolve(__dirname, '..');
 const capturedLogs = [];

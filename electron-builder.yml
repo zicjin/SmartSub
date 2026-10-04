@@ -16,6 +16,10 @@ publish:
   - provider: github
 generateUpdatesFilesForAllChannels: true
 electronUpdaterCompatibility: '>=2.16'
+# The default registry mirror can stall on newer Electron artifacts. Use the
+# upstream release endpoint so electron-builder can fetch the requested arch.
+electronDownload:
+  mirror: 'https://github.com/electron/electron/releases/download/'
 mac:
   target:
     - zip

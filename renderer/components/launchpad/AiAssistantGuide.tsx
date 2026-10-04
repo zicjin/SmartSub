@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import {
   AlertCircle,
   Bot,

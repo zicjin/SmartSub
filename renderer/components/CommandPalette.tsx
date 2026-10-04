@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { useTheme } from 'next-themes';
 import {
   AudioLines,
@@ -11,7 +11,7 @@ import {
   CloudDownload,
   Compass,
   Cpu,
-  Github,
+  GitFork,
   HelpCircle,
   Home,
   Keyboard,
@@ -227,7 +227,7 @@ export default function CommandPalette({
               openUrl('https://github.com/buxuku/SmartSub');
             }}
           >
-            <Github />
+            <GitFork />
             <span>{t('help.github')}</span>
           </CommandItem>
         </CommandGroup>

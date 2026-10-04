@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { AlertTriangle, ChevronDown, ChevronUp, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { QualityIssue } from '../../../types/qualityReview';

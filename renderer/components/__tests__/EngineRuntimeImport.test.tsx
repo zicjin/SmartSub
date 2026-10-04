@@ -8,7 +8,7 @@ import {
 import { toast } from 'sonner';
 import EngineModelTab from '../resources/EngineModelTab';
 
-jest.mock('next-i18next', () => {
+jest.mock('next-i18next/pages', () => {
   const t = (key: string) => key;
   return { useTranslation: () => ({ t }) };
 });

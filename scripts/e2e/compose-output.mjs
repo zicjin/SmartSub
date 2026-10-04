@@ -9,7 +9,7 @@ import ffmpeg from 'ffmpeg-static';
 import { _electron, expect } from '@playwright/test';
 
 const require = createRequire(import.meta.url);
-const ts = require('typescript');
+const ts = require(process.cwd() + '/scripts/typescript-compat.cjs');
 const constantsPath = path.resolve('renderer/components/subtitleMerge/constants.ts');
 const constantsCode = ts.transpileModule(await fs.readFile(constantsPath, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
 const constants = { exports: {} };

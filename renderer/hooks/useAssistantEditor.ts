@@ -8,7 +8,9 @@ import { useAssistantSource } from '../context/AssistantContext';
 export function useAssistantEditor(state: AssistantEditorState) {
   const latest = useRef(state);
   latest.current = state;
-  const adapter = useRef<ReturnType<typeof createAssistantEditor>>();
+  const adapter = useRef<ReturnType<typeof createAssistantEditor> | undefined>(
+    undefined,
+  );
   if (!adapter.current)
     adapter.current = createAssistantEditor(() => latest.current);
   useAssistantSource(adapter.current, [

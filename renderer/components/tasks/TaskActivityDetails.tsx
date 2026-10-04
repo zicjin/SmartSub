@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useState } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { ChevronDown } from 'lucide-react';
 import {
   Popover,
@@ -33,9 +33,9 @@ export const TaskActivityDetails = memo(function TaskActivityDetails({
   const [now, setNow] = useState(Date.now);
   const active = Boolean(
     activity?.stage &&
-      (stage === undefined || stage === activity.stage) &&
-      (!state || state === 'running' || state === 'cancelling') &&
-      (activity.status === 'running' || activity.status === 'cancelling'),
+    (stage === undefined || stage === activity.stage) &&
+    (!state || state === 'running' || state === 'cancelling') &&
+    (activity.status === 'running' || activity.status === 'cancelling'),
   );
   useEffect(() => {
     if (!active) return;

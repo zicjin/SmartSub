@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { isProviderConfigured } from '../../lib/providerUtils';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import {
   AlertTriangle,
   Check,

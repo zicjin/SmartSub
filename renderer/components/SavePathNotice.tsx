@@ -5,7 +5,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 
 const SavePathNotice = () => {
   const { t } = useTranslation('common');

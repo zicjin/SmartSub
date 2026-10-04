@@ -5,7 +5,7 @@ const os = require('node:os');
 const path = require('node:path');
 const vm = require('node:vm');
 const Module = require('node:module');
-const ts = require('typescript');
+const ts = require(process.cwd() + '/scripts/typescript-compat.cjs');
 
 const root = path.resolve(__dirname, '../..');
 const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'smartsub-language-flow-'));

@@ -4,7 +4,7 @@
  * 展示来源/导入时间/过期状态，支持删除。浏览器提取按平台标注兼容性。
  */
 import React, { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { toast } from 'sonner';
 import {
   AlertTriangle,

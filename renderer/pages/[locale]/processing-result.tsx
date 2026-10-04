@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { getStaticPaths, makeStaticProperties } from '../../lib/get-static';
@@ -66,8 +66,7 @@ export default function ProcessingResultPage() {
   };
   const toolId = item?.processing?.toolId;
   const compose = item?.configSnapshot as
-    | { videoPath?: string; subtitle?: { subtitlePath?: string } }
-    | undefined;
+    { videoPath?: string; subtitle?: { subtitlePath?: string } } | undefined;
   const resume =
     item?.type === 'compose'
       ? `/${locale}/subtitleMerge?${new URLSearchParams({ video: compose?.videoPath || '', subtitle: compose?.subtitle?.subtitlePath || '' })}`

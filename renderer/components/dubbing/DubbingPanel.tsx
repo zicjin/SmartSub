@@ -4,7 +4,7 @@
  */
 import React, { useRef, useState, useCallback, useEffect } from 'react';
 import { useAssistantSource } from '../../context/AssistantContext';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { useRouter } from 'next/router';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -105,7 +105,7 @@ export default function DubbingPanel({
   const [releaseAllOpen, setReleaseAllOpen] = useState(false);
   const [releaseError, setReleaseError] = useState<string | null>(null);
   const [releasing, setReleasing] = useState(false);
-  const releaseToken = useRef<object>();
+  const releaseToken = useRef<object | undefined>(undefined);
   useEffect(() => {
     releaseToken.current = undefined;
     setReleasing(false);

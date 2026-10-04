@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Check, FileText, Plus, Slash, Undo2, X } from 'lucide-react';
 import { toast } from 'sonner';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import {
   DropdownMenu,
   DropdownMenuContent,

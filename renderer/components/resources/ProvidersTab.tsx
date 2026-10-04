@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigationGuard } from '../../context/NavigationGuardContext';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
@@ -754,9 +754,9 @@ const ProvidersTab: React.FC = () => {
   const canRenameSelected = isCustomSelected || isAdditionalInstance;
   const supportsFallback = Boolean(
     currentProvider &&
-      getCurrentProviderType()?.fields?.some((field) =>
-        isProviderCredentialField(field.key),
-      ),
+    getCurrentProviderType()?.fields?.some((field) =>
+      isProviderCredentialField(field.key),
+    ),
   );
 
   const additionalBuiltinProviders = providers.filter((provider) => {

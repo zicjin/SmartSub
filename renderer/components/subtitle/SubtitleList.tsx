@@ -38,7 +38,7 @@ import {
 } from '@/components/ui/tooltip';
 import { Subtitle } from '../../hooks/useSubtitles';
 import { isMacPlatform } from '../../hooks/useHotkeys';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import TimeRangeEditor from './TimeRangeEditor';
 import type { RetranslateControl } from '../../hooks/useRetranslateFailed';
 import SpeakerCueControl from '../proofread/SpeakerCueControl';

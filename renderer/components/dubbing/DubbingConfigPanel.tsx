@@ -4,7 +4,7 @@
  * 克隆引擎（zipvoice）空音色时内嵌创建向导入口。
  */
 import React, { useState } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';

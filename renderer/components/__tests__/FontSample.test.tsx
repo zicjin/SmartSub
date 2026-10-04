@@ -3,7 +3,7 @@ import { act, render, waitFor } from '@testing-library/react';
 import { FontSample } from '../subtitleMerge/FontSelector';
 import { acquireFontSample } from '../../lib/fontSampleCache';
 
-jest.mock('next-i18next', () => ({
+jest.mock('next-i18next/pages', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 const installed = new Set<FontFace>();

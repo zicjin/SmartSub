@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import ReactPlayer from 'react-player';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';

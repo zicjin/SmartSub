@@ -3,7 +3,7 @@
  * 不属于任何服务商折叠项；空值回落出厂稿，「恢复出厂」清空 settings 键。
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { RotateCcw } from 'lucide-react';
 import { Panel, PanelHeader } from '@/components/ui/panel';
 import { Button } from '@/components/ui/button';

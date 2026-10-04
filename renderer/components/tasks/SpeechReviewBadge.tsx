@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { toast } from 'sonner';
 import type { IFiles } from '../../../types';
 import { Button } from '@/components/ui/button';

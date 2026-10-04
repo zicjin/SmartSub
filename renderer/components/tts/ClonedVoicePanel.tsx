@@ -3,7 +3,7 @@
  * 参考音频回放、参考文本、创建期质检报告、重命名、删除（确认框）。
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';

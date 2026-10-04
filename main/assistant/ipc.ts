@@ -31,7 +31,7 @@ const contextSchema = z
     projectId: z.string().optional(),
     sessionId: z.string().optional(),
     files: z.array(z.string()).max(1000).optional(),
-    task: z.record(z.unknown()).optional(),
+    task: z.record(z.string(), z.unknown()).optional(),
     recentErrors: z.array(z.string().max(2000)).max(10).optional(),
     editor: z
       .object({
@@ -257,8 +257,7 @@ export function setupAssistantHandlers(service: AutomationService) {
           },
         ],
         properties: ['openFile', 'multiSelections'] as (
-          | 'openFile'
-          | 'multiSelections'
+          'openFile' | 'multiSelections'
         )[],
       };
       const result = owner

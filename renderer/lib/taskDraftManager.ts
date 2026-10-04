@@ -50,7 +50,7 @@ const draftSchema = z.object({
   manualPairs: pairs.optional(),
   manualManuscriptPairs: pairs.optional(),
   taskType: z.string().optional(),
-  config: z.record(z.unknown()).optional(),
+  config: z.record(z.string(), z.unknown()).optional(),
   pipeline: z
     .object({
       dubbing: z

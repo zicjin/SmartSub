@@ -10,7 +10,7 @@ import {
 } from './schemas';
 
 const str = z.string().min(1);
-const object = z.record(z.unknown());
+const object = z.record(z.string(), z.unknown());
 const id = { id: str };
 const config = object.describe(
   'Advanced SmartSub configuration. See the linked operation reference for the corresponding application type.',
@@ -18,7 +18,7 @@ const config = object.describe(
 export interface OperationDefinition {
   name: string;
   description: string;
-  schema: z.AnyZodObject;
+  schema: z.ZodObject<any>;
   readOnly: boolean;
   long?: boolean;
   channel?: string;
@@ -293,7 +293,7 @@ mapped(
   {
     filePath: file,
     offsetMs: z.number().optional(),
-    config: syncConfig.default({}),
+    config: syncConfig.default(() => ({ mode: 'offset' as const })),
   },
   { long: true },
 );
@@ -311,7 +311,7 @@ mapped(
         outputPath: file.optional(),
       })
       .strict()
-      .default({}),
+      .default(() => ({ primaryPosition: 'top' as const })),
   },
   { long: true },
 );
@@ -321,7 +321,10 @@ mapped(
   'toolbox:splitBilingualSubtitles',
   {
     filePath: file,
-    config: z.object({ outputDir: file.optional() }).strict().default({}),
+    config: z
+      .object({ outputDir: file.optional() })
+      .strict()
+      .default(() => ({})),
   },
   { long: true },
 );
@@ -446,7 +449,7 @@ mapped(
     videoPath: file,
     subtitlePath: file,
     outputPath: file.optional(),
-    config: composeConfig.default({}),
+    config: composeConfig.default(() => ({ outputMode: 'hardcode' as const })),
     requestId,
   },
   { long: true, cancelChannel: 'subtitleMerge:cancelMerge' },

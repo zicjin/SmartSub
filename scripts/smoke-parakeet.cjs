@@ -7,7 +7,7 @@ const path = require('node:path');
 const Module = require('node:module');
 const { Worker } = require('node:worker_threads');
 const { execFileSync } = require('node:child_process');
-const ts = require('typescript');
+const ts = require(process.cwd() + '/scripts/typescript-compat.cjs');
 
 const root = path.resolve(__dirname, '..');
 const modelsRoot = path.resolve(

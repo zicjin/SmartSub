@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import {
   Activity,
   AlertCircle,

@@ -4,6 +4,10 @@ const webpack = require('webpack');
 
 module.exports = {
   trailingSlash: true,
+  // Next 16 defaults to Turbopack and requires an explicit config when a
+  // legacy webpack hook is present. Keep the hook for the Electron build's
+  // webpack path while allowing Next's default production compiler to run.
+  turbopack: {},
   images: {
     unoptimized: true,
   },
@@ -23,17 +27,20 @@ module.exports = {
       ),
     );
 
-    // 确保 TypeScript 文件被正确处理
+    // Next's SWC loader only covers files inside the renderer directory.
+    // Renderer code imports shared TypeScript from main/ and types/, so keep a
+    // small Babel rule for those external modules as well.
     config.module.rules.push({
       test: /\.tsx?$/,
-      use: [
-        {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-typescript'],
-          },
+      use: {
+        loader: require.resolve('babel-loader'),
+        options: {
+          presets: [
+            require.resolve('@babel/preset-typescript'),
+            [require.resolve('@babel/preset-react'), { runtime: 'automatic' }],
+          ],
         },
-      ],
+      },
     });
 
     return config;

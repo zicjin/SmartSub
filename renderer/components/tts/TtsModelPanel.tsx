@@ -4,7 +4,7 @@
  * 克隆专用模型另给「去创建克隆音色」动线入口）。
  */
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';

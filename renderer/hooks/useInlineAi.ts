@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { isProviderConfigured } from 'lib/providerUtils';
 import type { Provider } from '../../main/translate/types';
 import type { Subtitle } from './useSubtitles';

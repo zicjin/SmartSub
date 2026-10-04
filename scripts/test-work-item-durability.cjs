@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const { randomUUID } = require('node:crypto');
-const ts = require('typescript');
+const ts = require(process.cwd() + '/scripts/typescript-compat.cjs');
 
 function harness(initial = { workItemsMigrationVersion: 1, workItems: [] }) {
   let disk = structuredClone(initial);

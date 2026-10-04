@@ -5,7 +5,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Subtitle } from './useSubtitles';
 
 export interface RetranslateControl {

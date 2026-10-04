@@ -108,7 +108,7 @@ import {
   getDefaultStyle,
   getPlatformDefaultFont,
 } from '@/components/subtitleMerge/constants';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import type { TranscriptionEngine } from '../../../../types/engine';
 import type {
   IFiles,
@@ -2315,7 +2315,7 @@ export default function TaskWizard() {
                   if (manual === '__none__') return false;
                   return Boolean(
                     pairedManuscriptByMediaPath.get(f.filePath) ||
-                      formData?.manuscriptPath,
+                    formData?.manuscriptPath,
                   );
                 }).length
               : 0;

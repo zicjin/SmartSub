@@ -3,7 +3,7 @@ import { FileVideo } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { formatTime } from '../../hooks/useVideoPlayer';
 import { SubtitleStats } from '../../hooks/useSubtitles';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 
 interface VideoInfoProps {
   fileName: string;

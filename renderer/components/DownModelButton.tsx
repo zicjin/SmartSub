@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Button } from '@/components/ui/button';
 import { Loader2, RefreshCw, Download, X } from 'lucide-react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 
 interface DownloadDetail {
   status: string;

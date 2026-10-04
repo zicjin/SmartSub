@@ -1,6 +1,7 @@
 allowBuilds:
   '@alicloud/openapi-core': true
   '@ffmpeg-installer/darwin-arm64': true
+  '@parcel/watcher': true
   core-js: true
   core-js-pure: true
   electron: true
@@ -10,4 +11,5 @@ allowBuilds:
   lfa-ponyfill: true
   msedge-tts: true
   protobufjs: true
+  unrs-resolver: true
 nodeLinker: hoisted

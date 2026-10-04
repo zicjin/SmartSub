@@ -12,7 +12,7 @@ import React, {
   useEffect,
   useRef,
 } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { ParameterKvTable, ParameterTableDraft } from './ParameterKvTable';
 import { useParameterConfig } from '../hooks/useParameterConfig';
 import { useNavigationGuard } from '../context/NavigationGuardContext';

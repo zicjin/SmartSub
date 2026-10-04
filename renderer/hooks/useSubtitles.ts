@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import path from 'path';
 import { isSubtitleFile } from 'lib/utils';
 import { toast } from 'sonner';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { IFiles } from '../../types';
 import {
   subtitleOutputFilesToSave,

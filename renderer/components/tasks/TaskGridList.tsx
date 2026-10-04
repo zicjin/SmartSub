@@ -28,7 +28,7 @@ import {
 } from '@/components/ui/tooltip';
 import { cn, isSubtitleFile, isAudioPath } from 'lib/utils';
 import type { TaskTypeDef } from 'lib/taskTypes';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import {
   getFileStages,
   getFileRail,

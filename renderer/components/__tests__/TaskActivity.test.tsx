@@ -10,7 +10,7 @@ import useIpcCommunication from '../../hooks/useIpcCommunication';
 import { getTaskDisplayStatus, type StageDef } from '../tasks/stageUtils';
 import zh from '../../public/locales/zh/tasks.json';
 
-jest.mock('next-i18next', () => ({
+jest.mock('next-i18next/pages', () => ({
   useTranslation: () => ({
     t: (key: string, values: Record<string, unknown> = {}) => {
       const text =

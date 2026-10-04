@@ -5,7 +5,7 @@ const os = require('os');
 const path = require('path');
 const crypto = require('crypto');
 const Module = require('module');
-const ts = require('typescript');
+const ts = require(process.cwd() + '/scripts/typescript-compat.cjs');
 
 const originalLoad = Module._load;
 const originalTs = require.extensions['.ts'];

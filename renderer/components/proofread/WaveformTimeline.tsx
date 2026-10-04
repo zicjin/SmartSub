@@ -4,7 +4,7 @@ import RegionsPlugin, {
   type Region,
 } from 'wavesurfer.js/dist/plugins/regions.js';
 import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline.js';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Loader2, Magnet, RefreshCw, ZoomIn, ZoomOut } from 'lucide-react';
 import { Button } from '../ui/button';
 import {

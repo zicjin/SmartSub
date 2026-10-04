@@ -42,7 +42,7 @@ import {
   TriangleAlert,
   Zap,
 } from 'lucide-react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { toast } from 'sonner';
 
 enum DownSource {
@@ -116,7 +116,7 @@ const OnboardingDialog: React.FC<OnboardingDialogProps> = ({
 
   /**
    * 引导内切换界面语言：持久化到设置，并只替换当前路由的 locale 段（保留页面与查询），
-   * 避免跳回首页；界面语言随路由 locale 由 next-i18next 切换。引导面板状态在 Layout 持有，
+   * 避免跳回首页；界面语言随路由 locale 由 next-i18next/pages 切换。引导面板状态在 Layout 持有，
    * 路由变化不会卸载，弹窗保持打开。
    */
   const switchLanguage = async (value: string) => {

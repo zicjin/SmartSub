@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import type { SubtitleAlignment } from '../../../types/subtitleMerge';
 
 interface AlignmentSelectorProps {

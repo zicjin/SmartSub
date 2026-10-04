@@ -1,5 +1,5 @@
 import { CheckCircle2, Loader2, RotateCcw, Square, Trash2 } from 'lucide-react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import type { ToolboxQueueItem } from '../../../lib/toolboxQueue';

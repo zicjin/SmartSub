@@ -27,7 +27,7 @@ import {
 } from 'lib/engineModels';
 import { isParakeetLanguageMismatch } from '../../../types/parakeet';
 import type { TaskTypeDef } from 'lib/taskTypes';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { useCustomLanguages } from 'hooks/useCustomLanguages';
 import { mergeLanguageOptions } from '../../../types/language';
 

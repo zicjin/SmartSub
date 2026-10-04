@@ -1,7 +1,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const Module = require('node:module');
-const ts = require('typescript');
+const ts = require(process.cwd() + '/scripts/typescript-compat.cjs');
 const originalLoad = Module._load;
 const originalTs = require.extensions['.ts'];
 const running = new Map();

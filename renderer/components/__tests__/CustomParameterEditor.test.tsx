@@ -19,7 +19,7 @@ const mockUseParameterConfig = useParameterConfig as jest.MockedFunction<
   typeof useParameterConfig
 >;
 
-jest.mock('next-i18next', () => ({
+jest.mock('next-i18next/pages', () => ({
   useTranslation: () => ({
     t: (key: string) => {
       const strings: Record<string, string> = {

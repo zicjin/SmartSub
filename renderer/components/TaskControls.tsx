@@ -3,7 +3,7 @@ import { CircleStop, Loader2, Pause, Play } from 'lucide-react';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
 import { cn, isSubtitleFile } from 'lib/utils';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import type { TaskTypeDef } from 'lib/taskTypes';
 import { getFileStages, isFileDone } from './tasks/stageUtils';
 import { useHotkeys } from 'hooks/useHotkeys';

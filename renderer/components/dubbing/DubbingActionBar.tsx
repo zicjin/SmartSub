@@ -4,7 +4,7 @@
  * 导出成功用全局 toast 通知；结果横幅由 DubbingPanel 渲染在文件条下方。
  */
 import React from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';

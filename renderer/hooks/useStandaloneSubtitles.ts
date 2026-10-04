@@ -21,7 +21,7 @@ import {
 import { validCueRange } from '../lib/waveformEditing';
 import { qualityCheckSteps } from '../lib/qualityChecks';
 import { toast } from 'sonner';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { Subtitle, SubtitleStats, PlayerSubtitleTrack } from './useSubtitles';
 import { useSubtitleHistory, computeRangeDiff } from './useSubtitleHistory';
 import { mergeSpeakerIds } from '../../types/speakerDiarization';

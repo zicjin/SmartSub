@@ -10,7 +10,7 @@ import ProofreadImport from '../proofread/ProofreadImport';
 import ProofreadFileList from '../proofread/ProofreadFileList';
 import type { PendingFile } from '../../lib/proofreadUtils';
 
-jest.mock('next-i18next', () => ({
+jest.mock('next-i18next/pages', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 let invoke: jest.Mock;

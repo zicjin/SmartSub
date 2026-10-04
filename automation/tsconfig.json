@@ -2,8 +2,8 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "target": "es2022",
-    "module": "commonjs",
-    "moduleResolution": "node"
+    "module": "esnext",
+    "moduleResolution": "bundler"
   },
   "include": ["*.ts", "../types/automation.ts"],
   "exclude": ["../node_modules"]

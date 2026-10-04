@@ -16,7 +16,7 @@ jest.mock('@/context/NavigationGuardContext', () => ({
     mockGuard = options;
   },
 }));
-jest.mock('next-i18next', () => ({
+jest.mock('next-i18next/pages', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 

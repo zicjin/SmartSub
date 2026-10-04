@@ -84,7 +84,7 @@ async function postListenOnce(
         Authorization: `Token ${apiKey}`,
         'Content-Type': contentType,
       },
-      body: body as unknown as Uint8Array,
+      body: body as unknown as BodyInit,
       signal: controller.signal,
     });
   } catch (error) {

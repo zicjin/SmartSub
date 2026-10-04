@@ -7,7 +7,7 @@ import {
   proofreadDraftKey,
 } from '../../lib/proofreadDraft';
 
-jest.mock('next-i18next', () => ({
+jest.mock('next-i18next/pages', () => ({
   useTranslation: () => ({ t: mockTranslate }),
 }));
 jest.mock('sonner', () => ({

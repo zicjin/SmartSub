@@ -16,7 +16,7 @@ jest.mock('next/router', () => ({
   useRouter: () => ({ asPath: '/zh/home', query: { locale: 'zh' } }),
 }));
 
-jest.mock('next-i18next', () => ({
+jest.mock('next-i18next/pages', () => ({
   useTranslation: () => ({
     t: (key: string, opts?: any) => {
       if (opts?.shortcut) return `${key}:${opts.shortcut}`;

@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const Module = require('node:module');
-const ts = require('typescript');
+const ts = require(process.cwd() + '/scripts/typescript-compat.cjs');
 const originalLoad = Module._load;
 const originalTsLoader = require.extensions['.ts'];
 let translate;

@@ -3,7 +3,7 @@ import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import StylePresets from '../subtitleMerge/StylePresets';
 import { getDefaultStyle } from '../subtitleMerge/constants';
 
-jest.mock('next-i18next', () => ({
+jest.mock('next-i18next/pages', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 jest.mock('sonner', () => ({

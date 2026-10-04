@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ChevronDown, ChevronUp, Terminal, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from 'lib/utils';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 
 type LogEntry = {
   timestamp: number;

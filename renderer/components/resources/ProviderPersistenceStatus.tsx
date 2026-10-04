@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { RefreshCw, Undo2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {

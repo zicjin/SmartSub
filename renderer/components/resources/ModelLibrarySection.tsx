@@ -54,7 +54,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { importModelFromFolder } from 'lib/importModel';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import useLocalStorageState from 'hooks/useLocalStorageState';
 import fasterWhisperModels from 'lib/fasterWhisperModels.json';
 import type { TranscriptionEngine } from '../../../types/engine';

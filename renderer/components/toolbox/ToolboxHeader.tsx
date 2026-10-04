@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { ChevronLeft, Boxes } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getToolManifest } from './registry';
@@ -51,9 +51,7 @@ export default function ToolboxHeader({
               <h1 className="text-sm font-semibold tracking-tight text-foreground">
                 {t('title')}
               </h1>
-              <p className="text-xs text-muted-foreground">
-                {t('subtitle')}
-              </p>
+              <p className="text-xs text-muted-foreground">{t('subtitle')}</p>
             </div>
           </div>
         )}

@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import { useAssistantSource } from '../../context/AssistantContext';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import {
   Paintbrush,
   Play,
@@ -545,10 +545,10 @@ export default function SubtitleMergePanel({
                 canMerge={canMerge}
                 needsOutputPath={Boolean(
                   videoPath &&
-                    subtitlePath &&
-                    !outputPath &&
-                    !isProcessing &&
-                    !documentBlocked,
+                  subtitlePath &&
+                  !outputPath &&
+                  !isProcessing &&
+                  !documentBlocked,
                 )}
                 onSelectOutputPath={selectOutputPath}
                 onOutputModeChange={setOutputMode}

@@ -11,7 +11,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Trash2, X } from 'lucide-react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import type { ModelDownloadFormat } from '@/components/DownModel';
 
 interface DeleteModelProps {

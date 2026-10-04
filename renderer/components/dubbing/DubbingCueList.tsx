@@ -10,7 +10,7 @@ import React, {
   useCallback,
 } from 'react';
 import { computeSlots } from '../../../main/helpers/dubbing/alignment';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -374,7 +374,7 @@ export default function DubbingCueList({
                 ?.label || resolvedVoiceId;
             const overrideUnavailable = Boolean(
               cue.voiceId &&
-                !activeEngine?.voices.some((voice) => voice.id === cue.voiceId),
+              !activeEngine?.voices.some((voice) => voice.id === cue.voiceId),
             );
             return (
               <div
