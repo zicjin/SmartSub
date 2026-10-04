@@ -2,6 +2,11 @@
 
 Issues and specs for this repo live as GitHub issues. Use the `gh` CLI for all operations.
 
+**Repository remote:** use the `zic` Git remote for issue management. The current
+issue target is `zicjin/SmartSub`; pass `--repo zicjin/SmartSub` to `gh` commands
+when the command is not already scoped to that repository. Do not infer the issue
+repository from `origin`.
+
 ## Conventions
 
 - **Create an issue**: `gh issue create --title "..." --body "..."`. Use a heredoc for multi-line bodies.
@@ -11,7 +16,9 @@ Issues and specs for this repo live as GitHub issues. Use the `gh` CLI for all o
 - **Apply / remove labels**: `gh issue edit <number> --add-label "..."` / `--remove-label "..."`
 - **Close**: `gh issue close <number> --comment "..."`
 
-Infer the repo from `git remote -v`; `gh` does this automatically when run inside a clone.
+Confirm the target with `git remote get-url zic` before publishing or changing a
+ticket. `gh` may default to `origin` when run inside a clone, so issue operations
+must explicitly use the repository associated with `zic`.
 
 ## Pull requests as a triage surface
 
