@@ -90,6 +90,7 @@ import {
   getFireRedModelIds,
   getFireRedRequiredFileExpectations,
   getFireRedSupportedSources,
+  resolveFireRedSelection,
   validateFireRedModelLayout,
 } from '../main/helpers/fireRedModelCatalog';
 import {
@@ -2306,6 +2307,22 @@ eq(
   getFireRedModelIds(),
   ['fire-red-asr-large-zh-en', FIRERED_AED2_MODEL_ID],
   'fireRed catalog keeps AED-L and AED2 as independent model IDs',
+);
+eq(
+  resolveFireRedSelection(undefined, [
+    FIRERED_AED2_MODEL_ID,
+    'fire-red-asr-large-zh-en',
+  ]),
+  { id: 'fire-red-asr-large-zh-en' },
+  'fireRed selection keeps AED-L as the default when both models are installed',
+);
+eq(
+  resolveFireRedSelection(FIRERED_AED2_MODEL_ID, [
+    'fire-red-asr-large-zh-en',
+    FIRERED_AED2_MODEL_ID,
+  ]),
+  { id: FIRERED_AED2_MODEL_ID },
+  'fireRed selection propagates an explicitly selected AED2 model',
 );
 eq(
   FIRERED_MODELS[FIRERED_AED2_MODEL_ID].archiveSizeBytes,

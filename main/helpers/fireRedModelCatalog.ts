@@ -295,7 +295,9 @@ export function resolveFireRedSelection(
   const normalized = (requested || '').toLowerCase();
   const chosen =
     ids.find((id) => id === normalized && installed.includes(id)) ??
-    installed[0];
+    (installed.includes(FIRERED_DEFAULT_MODEL_ID)
+      ? FIRERED_DEFAULT_MODEL_ID
+      : installed[0]);
   return { id: chosen };
 }
 
