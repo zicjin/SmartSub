@@ -56,6 +56,56 @@
  */
 
 /**
+ * @typedef {Object} LinearResamplerHandle
+ * @see src/resampler.cc
+ */
+
+/**
+ * @typedef {Object} OfflineTtsHandle
+ * @see src/non-streaming-tts.cc
+ */
+
+/**
+ * @typedef {Object} OnlinePunctuationHandle
+ * @see src/punctuation.cc
+ */
+
+/**
+ * @typedef {Object} KeywordSpotterHandle
+ * @see src/keyword-spotter.cc
+ */
+
+/**
+ * @typedef {Object} SpeakerEmbeddingExtractorHandle
+ * @see src/speaker-identification.cc
+ */
+
+/**
+ * @typedef {Object} SpeakerEmbeddingManagerHandle
+ * @see src/speaker-identification.cc
+ */
+
+/**
+ * @typedef {Object} SpokenLanguageIdentificationHandle
+ * @see src/spoken-language-identification.cc
+ */
+
+/**
+ * @typedef {Object} OfflineSpeakerDiarizationHandle
+ * @see src/non-streaming-speaker-diarization.cc
+ */
+
+/**
+ * @typedef {Object} OfflineSpeechDenoiserHandle
+ * @see src/non-streaming-speech-denoiser.cc
+ */
+
+/**
+ * @typedef {Object} OnlineSpeechDenoiserHandle
+ * @see src/online-speech-denoiser.cc
+ */
+
+/**
  * A single audio event returned by AudioTagging.compute().
  * @typedef {Object} AudioEvent
  * @property {string} name - The event name.
@@ -245,22 +295,6 @@
  */
 
 /**
- * Offline Qwen3-ASR model config (autoregressive decoder).
- * NOTE: the C++ binding `memset(0)`s this struct, so all numeric fields must be
- * passed explicitly from JS — omitted numbers fall back to 0, not C++ defaults.
- * @typedef {Object} OfflineQwen3ASRModelConfig
- * @property {string} [convFrontend]
- * @property {string} [encoder]
- * @property {string} [decoder]
- * @property {string} [tokenizer]
- * @property {number} [maxTotalLen]
- * @property {number} [maxNewTokens]
- * @property {number} [temperature]
- * @property {number} [topP]
- * @property {number} [seed]
- */
-
-/**
  * Offline model config.
  * @typedef {Object} OfflineModelConfig
  * @property {OfflineTransducerModelConfig} [transducer]
@@ -278,12 +312,10 @@
  * @property {OfflineTdnnModelConfig} [tdnn]
  * @property {OfflineSenseVoiceModelConfig} [senseVoice]
  * @property {OfflineCohereTranscribeModelConfig} [cohereTranscribe]
- * @property {OfflineQwen3ASRModelConfig} [qwen3Asr]
  * @property {string} [tokens]
  * @property {number} [numThreads]
  * @property {boolean|number} [debug]
  * @property {string} [provider]
- * @property {string} [modelType]
  */
 
 /**
@@ -586,6 +618,7 @@
  * Offline Speech Denoiser model config
  * @typedef {Object} OfflineSpeechDenoiserDpdfNetModelConfig
  * @property {string} [model]
+ * @property {number} [attenuationLimitDb] Offline attenuation limit in dB.
  */
 
 /**
@@ -614,6 +647,7 @@
  * Offline speaker segmentation (pyannote) model config
  * @typedef {Object} OfflineSpeakerSegmentationPyannoteModelConfig
  * @property {string} [model]
+ * @property {number} [windowShiftRatio=0.1]
  */
 
 /**
@@ -704,6 +738,7 @@
  * @property {number[]} context_scores
  * @property {number} segment
  * @property {number[]} words
+ * @property {number} num_trailing_blanks
  * @property {number} start_time
  * @property {boolean} is_final
  * @property {boolean} is_eof

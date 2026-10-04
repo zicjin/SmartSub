@@ -1,4 +1,5 @@
 /** @typedef {import('./types').OfflineTtsConfig} OfflineTtsConfig */
+/** @typedef {import('./types').OfflineTtsHandle} OfflineTtsHandle */
 /** @typedef {import('./types').TtsRequest} TtsRequest */
 /** @typedef {import('./types').GeneratedAudio} GeneratedAudio */
 
@@ -84,7 +85,7 @@ class OfflineTts {
    *
    * The progress callback receives streaming audio chunks.
    *
-   * @param {TtsRequest & { generationConfig?: object, onProgress?: (info: {
+   * @param {TtsRequest & { generationConfig?: GenerationConfig, onProgress?: (info: {
    *     samples: Float32Array, progress: number }) => number | boolean | void
    *     }} obj
    * @returns {Promise<GeneratedAudio>}
