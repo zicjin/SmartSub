@@ -203,7 +203,9 @@ export class FireRedModelDownloader {
     let lastError: unknown = null;
     // 按所选源优先、其余按国内优先顺序回退（modelscope → ghproxy → github）。
     const supported = getFireRedSupportedSources(id);
-    for (const src of getFireRedSourceOrder(source).filter((s) => supported.includes(s))) {
+    for (const src of getFireRedSourceOrder(source).filter((s) =>
+      supported.includes(s),
+    )) {
       try {
         if (src === 'modelscope') {
           if (!spec.modelScopeRepo || spec.modelScopeFiles.length === 0) {
@@ -347,7 +349,10 @@ export class FireRedModelDownloader {
     try {
       if (fs.existsSync(tmp)) fs.rmSync(tmp, { force: true });
       await this.downloadArchive(url, tmp);
-      if (spec.archiveSizeBytes && fs.statSync(tmp).size !== spec.archiveSizeBytes) {
+      if (
+        spec.archiveSizeBytes &&
+        fs.statSync(tmp).size !== spec.archiveSizeBytes
+      ) {
         throw new Error(
           `archive size mismatch for ${spec.id}: expected ${spec.archiveSizeBytes}, got ${fs.statSync(tmp).size}`,
         );

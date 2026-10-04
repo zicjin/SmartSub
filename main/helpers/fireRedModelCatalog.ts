@@ -28,15 +28,13 @@ export function getFireRedModelsRoot(): string {
 
 /** fireRed 子模型标识（与本地子目录一一对应）。 */
 export type FireRedModelId =
-  | 'fire-red-asr-large-zh-en'
-  | 'fire-red-asr2-aed-zh-en';
+  'fire-red-asr-large-zh-en' | 'fire-red-asr2-aed-zh-en';
 
 /** 默认（当前唯一）fireRed 模型。 */
 export const FIRERED_DEFAULT_MODEL_ID: FireRedModelId =
   'fire-red-asr-large-zh-en';
 
-export const FIRERED_AED2_MODEL_ID: FireRedModelId =
-  'fire-red-asr2-aed-zh-en';
+export const FIRERED_AED2_MODEL_ID: FireRedModelId = 'fire-red-asr2-aed-zh-en';
 
 /**
  * fireRed 模型下载源：
@@ -181,13 +179,15 @@ export function getFireRedModelScopeFileUrl(
   spec: FireRedModelSpec,
   remote: string,
 ): string {
-  if (!spec.modelScopeRepo) throw new Error(`ModelScope unavailable for ${spec.id}`);
+  if (!spec.modelScopeRepo)
+    throw new Error(`ModelScope unavailable for ${spec.id}`);
   return `${getModelScopeBase()}/models/${spec.modelScopeRepo}/resolve/master/${remote}`;
 }
 
 /** ModelScope 文件树 API（取各文件 size 以计算总进度）。 */
 export function getFireRedModelScopeTreeUrl(spec: FireRedModelSpec): string {
-  if (!spec.modelScopeRepo) throw new Error(`ModelScope unavailable for ${spec.id}`);
+  if (!spec.modelScopeRepo)
+    throw new Error(`ModelScope unavailable for ${spec.id}`);
   return `${getModelScopeBase()}/api/v1/models/${spec.modelScopeRepo}/repo/files?Revision=master&Recursive=true`;
 }
 
@@ -238,7 +238,10 @@ export function validateFireRedModelLayout(
       }),
     };
   }
-  return validateModelLayoutWithSizes(dir, getFireRedRequiredFileExpectations(id));
+  return validateModelLayoutWithSizes(
+    dir,
+    getFireRedRequiredFileExpectations(id),
+  );
 }
 
 /** 两件套 + tokens 绝对路径（供 adapter 注入 worker 模型请求）。 */

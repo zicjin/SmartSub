@@ -1520,16 +1520,16 @@ const fireRedReady = {
   transcriptionEngine: 'fireRedAsr' as const,
   fireRedEngineInstalled: true,
   fireRedVadInstalled: true,
-  fireRedModelsInstalled: ['fire-red-asr-large-zh-en'],
+  fireRedModelsInstalled: ['fire-red-asr-large-zh-en', FIRERED_AED2_MODEL_ID],
 };
 eq(
   getSelectableModelsForEngine(fireRedReady),
-  ['fire-red-asr-large-zh-en'],
+  ['fire-red-asr-large-zh-en', FIRERED_AED2_MODEL_ID],
   'engineModels: fireRed selectable = installed fireRed models',
 );
 eq(
   getInstalledModelsForEngine(fireRedReady),
-  ['fire-red-asr-large-zh-en'],
+  ['fire-red-asr-large-zh-en', FIRERED_AED2_MODEL_ID],
   'engineModels: fireRed installed = installed fireRed models',
 );
 eq(
@@ -1541,7 +1541,7 @@ eq(
   hasModelsForEngine({
     transcriptionEngine: 'fireRedAsr',
     fireRedVadInstalled: false,
-    fireRedModelsInstalled: ['fire-red-asr-large-zh-en'],
+    fireRedModelsInstalled: ['fire-red-asr-large-zh-en', FIRERED_AED2_MODEL_ID],
   }),
   false,
   'engineModels: fireRed not ready without vad',
@@ -2333,7 +2333,9 @@ eq(
   'fireRed AED2 archive URL is explicit and independent of AED-L',
 );
 {
-  const dir = fs.mkdtempSync(nodePath.join(os.tmpdir(), 'smartsub-firered-aed2-'));
+  const dir = fs.mkdtempSync(
+    nodePath.join(os.tmpdir(), 'smartsub-firered-aed2-'),
+  );
   try {
     const files = getFireRedRequiredFileExpectations(FIRERED_AED2_MODEL_ID);
     for (const file of files) {
@@ -2341,9 +2343,17 @@ eq(
       fs.mkdirSync(nodePath.dirname(full), { recursive: true });
       fs.writeFileSync(full, Buffer.alloc(file.size));
     }
-    eq(validateFireRedModelLayout(FIRERED_AED2_MODEL_ID, dir).ok, true, 'fireRed AED2 complete layout is accepted');
+    eq(
+      validateFireRedModelLayout(FIRERED_AED2_MODEL_ID, dir).ok,
+      true,
+      'fireRed AED2 complete layout is accepted',
+    );
     fs.rmSync(nodePath.join(dir, 'tokens.txt'));
-    eq(validateFireRedModelLayout(FIRERED_AED2_MODEL_ID, dir).ok, false, 'fireRed AED2 incomplete layout is rejected');
+    eq(
+      validateFireRedModelLayout(FIRERED_AED2_MODEL_ID, dir).ok,
+      false,
+      'fireRed AED2 incomplete layout is rejected',
+    );
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }

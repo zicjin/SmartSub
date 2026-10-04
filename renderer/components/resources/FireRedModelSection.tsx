@@ -64,7 +64,9 @@ const FireRedModelSection: React.FC<{ onUpdate?: () => void }> = ({
   const [downloading, setDownloading] = useState<string | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [deleteModelId, setDeleteModelId] = useState<FireRedModelId>('fire-red-asr-large-zh-en');
+  const [deleteModelId, setDeleteModelId] = useState<FireRedModelId>(
+    'fire-red-asr-large-zh-en',
+  );
   const [source, setSource] = useState<FireRedModelSource>('modelscope');
 
   useEffect(() => {
@@ -151,10 +153,7 @@ const FireRedModelSection: React.FC<{ onUpdate?: () => void }> = ({
   };
 
   const handleImportFireRed = async (modelId: FireRedModelId) => {
-    const o = await importModelFromFolder(
-      'fireRedAsr',
-      modelId,
-    );
+    const o = await importModelFromFolder('fireRedAsr', modelId);
     if (o.kind === 'success') {
       toast.success(t('importModelSuccess'), { duration: 2000 });
       await load();
@@ -168,10 +167,7 @@ const FireRedModelSection: React.FC<{ onUpdate?: () => void }> = ({
 
   const handleDeleteFireRed = async (modelId: FireRedModelId) => {
     setShowDeleteConfirm(false);
-    const r = await window?.ipc?.invoke(
-      'deleteFireRedModel',
-      modelId,
-    );
+    const r = await window?.ipc?.invoke('deleteFireRedModel', modelId);
     if (r?.success) {
       await load();
       onUpdate?.();
@@ -193,13 +189,16 @@ const FireRedModelSection: React.FC<{ onUpdate?: () => void }> = ({
           <CardContent className="space-y-2 p-2">
             {FIRE_RED_MODEL_IDS.map((modelId) => {
               const installed =
-                status?.models.find((m) => m.id === modelId)?.installed ?? false;
+                status?.models.find((m) => m.id === modelId)?.installed ??
+                false;
               const supportedSources =
                 modelId === 'fire-red-asr2-aed-zh-en'
                   ? FIRERED_MODEL_SOURCES.filter((s) => s !== 'modelscope')
                   : FIRERED_MODEL_SOURCES;
               const sourceConfig: DownloadSourceConfig = {
-                value: supportedSources.includes(source) ? source : supportedSources[0],
+                value: supportedSources.includes(source)
+                  ? source
+                  : supportedSources[0],
                 options: supportedSources.map((s) => ({
                   value: s,
                   label: t(`engines.fireRedAsr.modelSources.${s}`),
@@ -207,82 +206,87 @@ const FireRedModelSection: React.FC<{ onUpdate?: () => void }> = ({
                 onChange: (s) => handleSelectSource(s as FireRedModelSource),
                 label: t('engines.fireRedAsr.downloadSource'),
                 confirmLabel: commonT('startDownload'),
-                hint: t(`engines.fireRedAsr.modelSourceHint.${supportedSources.includes(source) ? source : supportedSources[0]}`),
-                getCopyUrl: (s) => resolveModelDownloadUrl('firered', s, modelId),
+                hint: t(
+                  `engines.fireRedAsr.modelSourceHint.${supportedSources.includes(source) ? source : supportedSources[0]}`,
+                ),
+                getCopyUrl: (s) =>
+                  resolveModelDownloadUrl('firered', s, modelId),
               };
-              return <SherpaModelRow
-              icon={Mic}
-              key={modelId}
-              name={t(`engines.fireRedAsr.models.${modelId}.name`)}
-              desc={t(`engines.fireRedAsr.models.${modelId}.desc`)}
-              installed={installed}
-              busy={downloading === modelId}
-              progressPercent={Math.round(
-                (progress[`firered:${modelId}`] ?? 0) * 100,
-              )}
-              phaseText={
-                phase[`firered:${modelId}`] === 'extracting'
-                  ? t('engines.fireRedAsr.extracting')
-                  : undefined
-              }
-              progressWidthClass="w-44"
-              trailing={
-                downloading === modelId ? (
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="gap-1.5 text-muted-foreground"
-                    onClick={handleCancel}
-                  >
-                    <X className="h-3.5 w-3.5" />
-                    {commonT('cancel')}
-                  </Button>
-                ) : installed ? (
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="gap-1.5 text-muted-foreground hover:text-destructive"
-                    onClick={() => {
-                      setDeleteModelId(modelId);
-                      setShowDeleteConfirm(true);
-                    }}
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                    {t('engines.fireRedAsr.modelDelete')}
-                  </Button>
-                ) : (
-                  <div className="flex items-center gap-1.5">
-                    <DownloadSourcePopover
-                      open={showConfirm}
-                      onOpenChange={setShowConfirm}
-                      config={sourceConfig}
-                        onConfirm={() => doDownloadFireRed(modelId)}
-                    >
+              return (
+                <SherpaModelRow
+                  icon={Mic}
+                  key={modelId}
+                  name={t(`engines.fireRedAsr.models.${modelId}.name`)}
+                  desc={t(`engines.fireRedAsr.models.${modelId}.desc`)}
+                  installed={installed}
+                  busy={downloading === modelId}
+                  progressPercent={Math.round(
+                    (progress[`firered:${modelId}`] ?? 0) * 100,
+                  )}
+                  phaseText={
+                    phase[`firered:${modelId}`] === 'extracting'
+                      ? t('engines.fireRedAsr.extracting')
+                      : undefined
+                  }
+                  progressWidthClass="w-44"
+                  trailing={
+                    downloading === modelId ? (
                       <Button
                         size="sm"
-                        variant="outline"
-                        className="gap-1.5"
-                        disabled={!!downloading}
-                      onClick={() => setShowConfirm(true)}
+                        variant="ghost"
+                        className="gap-1.5 text-muted-foreground"
+                        onClick={handleCancel}
                       >
-                        <Download className="h-3.5 w-3.5" />
-                        {t('engines.fireRedAsr.modelDownload')}
+                        <X className="h-3.5 w-3.5" />
+                        {commonT('cancel')}
                       </Button>
-                    </DownloadSourcePopover>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="gap-1.5 text-muted-foreground"
-                      disabled={!!downloading}
-                      onClick={() => handleImportFireRed(modelId)}
-                    >
-                      <Upload className="h-3.5 w-3.5" />
-                      {t('importFromFolder')}
-                    </Button>
-                  </div>
-                )
-              }
-            />;
+                    ) : installed ? (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="gap-1.5 text-muted-foreground hover:text-destructive"
+                        onClick={() => {
+                          setDeleteModelId(modelId);
+                          setShowDeleteConfirm(true);
+                        }}
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                        {t('engines.fireRedAsr.modelDelete')}
+                      </Button>
+                    ) : (
+                      <div className="flex items-center gap-1.5">
+                        <DownloadSourcePopover
+                          open={showConfirm}
+                          onOpenChange={setShowConfirm}
+                          config={sourceConfig}
+                          onConfirm={() => doDownloadFireRed(modelId)}
+                        >
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="gap-1.5"
+                            disabled={!!downloading}
+                            onClick={() => setShowConfirm(true)}
+                          >
+                            <Download className="h-3.5 w-3.5" />
+                            {t('engines.fireRedAsr.modelDownload')}
+                          </Button>
+                        </DownloadSourcePopover>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="gap-1.5 text-muted-foreground"
+                          disabled={!!downloading}
+                          onClick={() => handleImportFireRed(modelId)}
+                        >
+                          <Upload className="h-3.5 w-3.5" />
+                          {t('importFromFolder')}
+                        </Button>
+                      </div>
+                    )
+                  }
+                />
+              );
             })}
           </CardContent>
         </Card>

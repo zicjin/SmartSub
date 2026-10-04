@@ -35,6 +35,16 @@ const tdt = (version) => ({
   vadModel: '/vad.onnx',
   params,
 });
+const fireRedAed2 = {
+  modelType: 'fire_red_asr',
+  fireRed: {
+    encoder: '/aed2/encoder.int8.onnx',
+    decoder: '/aed2/decoder.int8.onnx',
+  },
+  tokens: '/aed2/tokens.txt',
+  vadModel: '/vad.onnx',
+  params,
+};
 const plain = (value) => JSON.parse(JSON.stringify(value));
 
 function harness() {
@@ -137,6 +147,19 @@ async function main() {
     h.configs.at(-1).modelConfig.nemoCtc.model,
     '/other/model.int8.onnx',
   );
+
+  h.send({ type: 'load', ...fireRedAed2 });
+  assert.deepEqual(
+    h.configs.at(-1),
+    helpers.buildFireRedRecognizerConfig(
+      fireRedAed2.fireRed,
+      fireRedAed2.tokens,
+      params,
+    ),
+    'AED2 uses the shared fireRedAsr request with its own exported files',
+  );
+  assert.equal(h.configs.at(-1).featConfig.sampleRate, 16000);
+  assert.equal(h.configs.at(-1).featConfig.featureDim, 80);
 
   h.send({ type: 'transcribe', id: 'active', audioFile: 'test.wav', ...ctc });
   const activeDetails = h.messages
