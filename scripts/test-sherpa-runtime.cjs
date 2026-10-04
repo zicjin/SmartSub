@@ -39,7 +39,10 @@ for (const platform of [
   'win-x64',
   'win-ia32',
 ]) {
-  assert.match(fetcher, new RegExp(`'${platform}': '[A-Za-z0-9+/=]{86,88}'`));
+  assert.match(
+    fetcher,
+    new RegExp(`'${platform}':\\s*'[A-Za-z0-9+/=]{86,88}'`),
+  );
 }
 assert.match(fetcher, /function packageName\(platformKey\)/);
 
