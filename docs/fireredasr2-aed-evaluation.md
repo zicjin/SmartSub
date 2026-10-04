@@ -1,6 +1,12 @@
 # FireRedASR2-AED 接入评估
 
-评估日期：2026-10-04。结论：**可以引入，但不能直接复用当前 FireRedASR-AED-L（int8）的运行库和模型清单；应作为新模型 ID 并行接入，先升级并验证 sherpa-onnx 原生库。**
+评估日期：2026-10-04。结论：**已按独立模型 ID 接入 AED2；生产发布仍受跨平台验收门禁约束。** AED-L 保持原目录和默认行为。
+
+## SmartSub 验收记录
+
+- sherpa-onnx 1.13.8（官方平台包，固定 SHA-512 integrity）已替换随包 JavaScript/vendor 绑定，并包含 FireRedASR fixed-cache 与 FireRedASR2 dynamic-cache 修复。
+- macOS arm64 本机使用相同 worker 和 Silero VAD 完成 AED-L 与 AED2 int8 CPU 冒烟。AED-L 使用 `sample.wav`，输出 1 个段（0.23–10.208 s）；AED2 使用官方 `test_wavs/0.wav`，输出 3 个段（0.678–2.284 s、3.814–5.932 s、6.534–10.048 s）。两次均保持 16 kHz/80 维输入和段级 VAD 时间轴。
+- Windows x64、Linux x64、中文/英语/方言完整样本、接近 60 秒、静音、取消、malformed input、real-time factor、峰值内存和加载时间仍需 CI/实体机记录；在这些证据完成前，发布流程不得宣称三平台通过。
 
 ## 当前项目基线
 
