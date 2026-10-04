@@ -1,0 +1,54 @@
+model = "gpt-6.1-sol"
+model_reasoning_effort = "high"
+plan_mode_reasoning_effort = "xhigh"
+personality = "pragmatic"
+suppress_unstable_features_warning = true
+
+# model_context_window = 1000000
+# model_auto_compact_token_limit = 900000
+
+model_provider = "custom"
+[model_providers.custom]
+name = "custom"
+base_url = "http://127.0.0.1:8317/v1"
+env_key = "CUSTOM_API_KEY"
+wire_api = "responses"
+requires_openai_auth = false
+
+[features]
+multi_agent_v2 = true
+goals = true
+plugins = true
+apps = false
+terminal_resize_reflow = true
+memories = false
+chronicle = false
+js_repl = false
+default_mode_request_user_input = true
+
+[agents]
+max_concurrent_threads_per_session = 4
+
+[tui]
+status_line = [
+  "model-with-reasoning",
+  "current-dir",
+  "context-used",
+  "five-hour-limit",
+  "weekly-limit",
+  "task-progress",
+  "git-branch",
+  "thread-title",
+  "context-window-size",
+]
+status_line_use_colors = true
+screen_reader_detection_done = true
+
+[tui.model_availability_nux]
+"gpt-6.1-sol" = 4
+
+[plugins."data-analytics@openai-curated-remote"]
+enabled = false
+
+[plugins."build-web-apps@openai-curated-remote"]
+enabled = false
