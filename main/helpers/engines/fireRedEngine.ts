@@ -30,6 +30,28 @@ const activeTranscribeIds = new Set<string>();
 
 type FireRedSelection = NonNullable<ReturnType<typeof resolveFireRedSelection>>;
 
+function describeFireRedFailure(
+  error: unknown,
+  modelId: FireRedSelection['id'],
+  audioFile: string,
+): Error {
+  const message = error instanceof Error ? error.message : String(error);
+  const files = getFireRedModelFiles(modelId);
+  const missingModelFile = [files.encoder, files.decoder, files.tokens].find(
+    (file) => !fs.existsSync(file),
+  );
+  const cause = missingModelFile
+    ? `model file missing: ${missingModelFile}`
+    : !fs.existsSync(getFireRedVadModelPath())
+      ? 'Silero VAD file missing'
+      : !fs.existsSync(audioFile)
+        ? 'audio input missing'
+        : `native runtime or audio decode: ${message}`;
+  return new Error(`FireRed ${modelId} transcription failed (${cause})`, {
+    cause: error,
+  });
+}
+
 /** 组装 worker 模型请求（不含 audio_file）。transcribe 与 prewarm 共用，缓存 key 一致。 */
 function buildModelRequest(
   selection: FireRedSelection,
@@ -133,7 +155,7 @@ async function transcribeFireRed(ctx: TranscribeContext): Promise<string> {
     if (signal?.aborted || (error as { code?: string })?.code === 'cancelled') {
       throw new TaskCancelledError();
     }
-    throw error;
+    throw describeFireRedFailure(error, selection.id, tempAudioFile);
   } finally {
     signal?.removeEventListener('abort', onAbort);
     activeTranscribeIds.delete(id);
