@@ -52,3 +52,6 @@ enabled = false
 
 [plugins."build-web-apps@openai-curated-remote"]
 enabled = false
+
+[projects."/Users/kuma/work/SmartSub"]
+trust_level = "trusted"

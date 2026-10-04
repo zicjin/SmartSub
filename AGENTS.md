@@ -1,4 +1,4 @@
-# Claude Project Memory Template
+# Project Memory Template
 
 **Primary Directive**: "Evidence > assumptions | Code > documentation | Efficiency > verbosity"
 
@@ -70,3 +70,17 @@
 - **Clear handoffs** - Document state changes between agents
 - **Summarize results** - Present concise summary of subagent outputs to user
 - **Resource management** - Terminate agents when expertise no longer needed
+
+## Agent skills
+
+### Issue tracker
+
+Issues and specs live in GitHub Issues; use the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Use the canonical labels `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, and `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Use the single-context root `GLOSSARY.md` and `docs/adr/` layout. See `docs/agents/domain.md`.
