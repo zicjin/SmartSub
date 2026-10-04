@@ -62,7 +62,8 @@ const FireRedModelSection: React.FC<{ onUpdate?: () => void }> = ({
   const [progress, setProgress] = useState<Record<string, number>>({});
   const [phase, setPhase] = useState<Record<string, string>>({});
   const [downloading, setDownloading] = useState<string | null>(null);
-  const [showConfirm, setShowConfirm] = useState(false);
+  const [openDownloadModel, setOpenDownloadModel] =
+    useState<FireRedModelId | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteModelId, setDeleteModelId] = useState<FireRedModelId>(
     'fire-red-asr-large-zh-en',
@@ -118,13 +119,16 @@ const FireRedModelSection: React.FC<{ onUpdate?: () => void }> = ({
     };
   }, [load, onUpdate]);
 
-  const doDownloadFireRed = async (modelId: FireRedModelId) => {
-    setShowConfirm(false);
+  const doDownloadFireRed = async (
+    modelId: FireRedModelId,
+    selectedSource: FireRedModelSource,
+  ) => {
+    setOpenDownloadModel(null);
     setDownloading(modelId);
     try {
       const r = await window?.ipc?.invoke('downloadFireRedModel', {
         model: modelId,
-        source,
+        source: selectedSource,
       });
       if (r?.success) {
         await load();
@@ -256,17 +260,24 @@ const FireRedModelSection: React.FC<{ onUpdate?: () => void }> = ({
                     ) : (
                       <div className="flex items-center gap-1.5">
                         <DownloadSourcePopover
-                          open={showConfirm}
-                          onOpenChange={setShowConfirm}
+                          open={openDownloadModel === modelId}
+                          onOpenChange={(open) =>
+                            setOpenDownloadModel(open ? modelId : null)
+                          }
                           config={sourceConfig}
-                          onConfirm={() => doDownloadFireRed(modelId)}
+                          onConfirm={() =>
+                            doDownloadFireRed(
+                              modelId,
+                              sourceConfig.value as FireRedModelSource,
+                            )
+                          }
                         >
                           <Button
                             size="sm"
                             variant="outline"
                             className="gap-1.5"
                             disabled={!!downloading}
-                            onClick={() => setShowConfirm(true)}
+                            onClick={() => setOpenDownloadModel(modelId)}
                           >
                             <Download className="h-3.5 w-3.5" />
                             {t('engines.fireRedAsr.modelDownload')}
