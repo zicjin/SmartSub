@@ -1,9 +1,13 @@
+const path = require('path');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ['class'],
   content: [
-    './renderer/pages/**/*.{js,ts,jsx,tsx}',
-    './renderer/components/**/*.{js,ts,jsx,tsx}',
+    // Turbopack runs PostCSS from a worker whose cwd is not stable. Resolve
+    // globs from this config so Tailwind always scans the renderer sources.
+    path.resolve(__dirname, 'pages/**/*.{js,ts,jsx,tsx}'),
+    path.resolve(__dirname, 'components/**/*.{js,ts,jsx,tsx}'),
   ],
   prefix: '',
   theme: {
