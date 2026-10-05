@@ -1918,18 +1918,18 @@ eq(
   'cpu',
   'fireRed: unknown provider falls back to cpu',
 );
-// 段长安全闸：0/未设/超限 → 60s 硬上限或 30s 默认；合法值原样。
+// 段长安全闸：0/未设/超限 → 40s 硬上限或 30s 默认；合法值原样。
 eq(
   clampFireRedMaxSpeech(0),
   FIRERED_HARD_MAX_SPEECH_S,
-  'fireRed: 0 (unlimited) clamps to 60s hard cap',
+  'fireRed: 0 (unlimited) clamps to 40s hard cap',
 );
 eq(
   clampFireRedMaxSpeech(120),
   FIRERED_HARD_MAX_SPEECH_S,
-  'fireRed: >60 clamps to 60s hard cap',
+  'fireRed: >40 clamps to 40s hard cap',
 );
-eq(clampFireRedMaxSpeech(45), 45, 'fireRed: in-range value passes through');
+eq(clampFireRedMaxSpeech(25), 25, 'fireRed: in-range value passes through');
 eq(
   clampFireRedMaxSpeech(undefined),
   FIRERED_DEFAULT_MAX_SPEECH_S,
@@ -1938,7 +1938,7 @@ eq(
 eq(
   buildFireRedParams({ vadMaxSpeechDuration: 0 }).vad_max_speech_duration_s,
   FIRERED_HARD_MAX_SPEECH_S,
-  'fireRed: buildFireRedParams overrides 0=unlimited convention (clamps to 60)',
+  'fireRed: buildFireRedParams overrides 0=unlimited convention (clamps to 40)',
 );
 
 // --- modelImport: validateModelLayout（含嵌套相对路径） ---
