@@ -249,9 +249,10 @@ export function getSrtFileName(
   customFileName: string,
   templateData: { [key: string]: string },
 ): string {
+  const model = templateData.model?.trim().replace(/[\\/:*?"<>|]/g, '-');
   switch (option) {
     case 'noSave':
-      return `${fileName}_temp`;
+      return model ? `${fileName}_${model}` : `${fileName}_temp`;
     case 'fileName':
       return fileName;
     case 'fileNameWithLang':
@@ -259,7 +260,7 @@ export function getSrtFileName(
     case 'custom':
       return renderTemplate(customFileName, templateData);
     default:
-      return `${fileName}_temp`;
+      return model ? `${fileName}_${model}` : `${fileName}_temp`;
   }
 }
 
