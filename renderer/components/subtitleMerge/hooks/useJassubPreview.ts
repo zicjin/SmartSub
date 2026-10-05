@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type JASSUB from 'jassub';
+import { jassubAssetUrl, loadJassub } from './jassubRuntime';
 import type { SubtitleStyle } from '../../../../types/subtitleMerge';
 import { useSubtitleBounds } from './useSubtitleBounds';
 import {
@@ -207,7 +208,7 @@ export function useJassubPreview({
           }
           let instance = session.instance;
           if (!instance) {
-            const { default: JASSUBCtor } = await import('jassub');
+            const { default: JASSUBCtor } = await loadJassub();
             if (!current()) return;
             const canvas = document.createElement('canvas');
             canvas.className = 'JASSUB';
@@ -226,6 +227,9 @@ export function useJassubPreview({
               fonts,
               defaultFont: fontName,
               queryFonts: false,
+              workerUrl: jassubAssetUrl('worker.js'),
+              wasmUrl: jassubAssetUrl('wasm/jassub-worker.wasm'),
+              modernWasmUrl: jassubAssetUrl('wasm/jassub-worker-modern.wasm'),
             });
             session.instance = instance;
             // JASSUB's internal video/resize callbacks do not await these promises.

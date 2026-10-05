@@ -5,14 +5,34 @@ const { spawn } = require('node:child_process');
 
 const nextBin = require.resolve('../node_modules/next/dist/bin/next');
 const args = process.argv.slice(2);
-if (args[0] === 'build' && !args.includes('--webpack')) args.push('--webpack');
 
-const child = spawn(process.execPath, [nextBin, ...args], {
-  cwd: process.cwd(),
-  stdio: 'inherit',
-  env: process.env,
-});
-child.on('exit', (code, signal) => {
-  if (signal) process.kill(process.pid, signal);
-  process.exit(code ?? 1);
-});
+if (args[0] === 'dev' || args[0] === 'build') {
+  const prepare = spawn(
+    process.execPath,
+    [path.join(__dirname, 'prepare-jassub-assets.mjs')],
+    {
+      cwd: process.cwd(),
+      stdio: 'inherit',
+      env: process.env,
+    },
+  );
+  prepare.on('exit', (code, signal) => {
+    if (signal) process.kill(process.pid, signal);
+    if (code !== 0) process.exit(code ?? 1);
+    startNext();
+  });
+} else {
+  startNext();
+}
+
+function startNext() {
+  const child = spawn(process.execPath, [nextBin, ...args], {
+    cwd: process.cwd(),
+    stdio: 'inherit',
+    env: process.env,
+  });
+  child.on('exit', (code, signal) => {
+    if (signal) process.kill(process.pid, signal);
+    process.exit(code ?? 1);
+  });
+}

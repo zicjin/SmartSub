@@ -2,6 +2,7 @@ node_modules
 *.log
 .next
 app
+renderer/public/jassub/
 dist
 .idea
 .DS_Store
