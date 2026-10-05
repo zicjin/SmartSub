@@ -13,116 +13,143 @@ concurrency:
 jobs:
   app:
     name: App checks (i18n / unit tests / build)
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.9.1
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          # @testing-library/jest-dom requires Node >=22.
-          node-version: 22.14.0
-          cache: yarn
+          node-version: 24
+          cache: pnpm
 
       # CI=true 时 postinstall 的 ensure-native 会自动跳过原生依赖下载；
-      # yarn build（--no-pack）不依赖 addon.node / sherpa 原生库，无需 fetch。
+      # pnpm build 不依赖 addon.node / sherpa 原生库，无需 fetch。
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
+
+      - name: Configure TypeScript 7 test compiler
+        shell: bash
+        run: |
+          mv node_modules/.bin/tsc node_modules/.bin/tsc-native
+          cat > node_modules/.bin/tsc <<'EOF'
+          #!/usr/bin/env bash
+          set -euo pipefail
+          for arg in "$@"; do
+            if [[ "$arg" == "-p" || "$arg" == "--project" ]]; then
+              exec node "$GITHUB_WORKSPACE/node_modules/typescript/bin/tsc" "$@"
+            fi
+          done
+          exec node "$GITHUB_WORKSPACE/node_modules/typescript/bin/tsc" "$@" \
+            --ignoreConfig --types node --strict false \
+            --module node16 --moduleResolution node16
+          EOF
+          chmod +x node_modules/.bin/tsc
 
       - name: Check i18n key parity
-        run: yarn check:i18n
+        run: pnpm check:i18n
 
       - name: Typecheck renderer and main process
-        run: yarn typecheck
+        run: pnpm typecheck
 
       - name: Tests (parameter UI and durable saves)
         run: |
-          yarn test:renderer
-          yarn test:parameter-persistence
+          pnpm test:renderer
+          pnpm test:parameter-persistence
 
       - name: Install fonts for subtitle rendering tests
         run: sudo apt-get update && sudo apt-get install -y fonts-dejavu-core fonts-noto-cjk
 
       - name: Tests (Pro baseline and workflow reliability)
-        run: yarn test:pro-baseline
+        run: pnpm test:pro-baseline
 
       - name: Unit tests (engines)
-        run: yarn test:engines
+        run: pnpm test:engines
 
       - name: Tests (local speech review and warning persistence)
         run: |
-          yarn test:speech-review
-          yarn test:missed-speech
+          pnpm test:speech-review
+          pnpm test:missed-speech
 
       - name: Unit tests (AI response parser)
-        run: yarn test:translate-parser
+        run: pnpm test:translate-parser
 
       - name: Unit tests (multi-format subtitle output)
-        run: yarn test:subtitle-output
+        run: pnpm test:subtitle-output
 
       - name: Unit tests (glossary)
-        run: yarn test:glossary
+        run: pnpm test:glossary
 
       - name: Unit tests (structured output fallback)
-        run: yarn test:structured-output
+        run: pnpm test:structured-output
 
       - name: Tests (custom parameter editing and requests)
-        run: yarn test:custom-parameters
+        run: pnpm test:custom-parameters
 
       - name: Unit tests (translation cancel)
-        run: yarn test:translation-cancel
+        run: pnpm test:translation-cancel
 
       - name: Integration tests (translation proxy and failure reporting)
-        run: yarn test:translation-proxy
+        run: pnpm test:translation-proxy
 
       - name: Integration tests (translation results)
-        run: yarn test:untranslated-flow
+        run: pnpm test:untranslated-flow
 
       - name: Tests (provider connection test UI flow)
-        run: yarn test:provider-test-flow
+        run: pnpm test:provider-test-flow
 
       - name: Unit tests (free translators)
-        run: yarn test:free-translators
+        run: pnpm test:free-translators
 
       - name: Unit tests (Qwen-MT)
-        run: yarn test:qwen-mt
+        run: pnpm test:qwen-mt
 
       # 配音功能与 test:dubbing 脚本随 3.4.0 开发分支引入，尚未合入 main；
       # 用 --if-present 让脚本存在才执行，避免 workflow 引用未合并脚本导致 main 恒红，
       # 配音分支合入后本步骤自动生效、无需改 workflow。
       - name: Unit tests (dubbing)
-        run: npm run test:dubbing --if-present
+        run: pnpm run --if-present test:dubbing
 
       - name: Unit tests (Xiaomi MiMo audio)
-        run: yarn test:mimo-audio
+        run: pnpm test:mimo-audio
 
       - name: Unit tests (voice clone and number normalization)
-        run: yarn test:voice-clone
+        run: pnpm test:voice-clone
 
       - name: Compile application (renderer + main)
-        run: yarn build
+        run: pnpm build
 
   docs:
     name: Docs build (Docusaurus)
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.9.1
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: 20.14.0
-          cache: yarn
-          cache-dependency-path: docs/yarn.lock
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: docs/pnpm-lock.yaml
 
       - name: Install docs dependencies
         working-directory: docs
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Build docs site
         working-directory: docs
-        run: yarn build
+        run: pnpm build

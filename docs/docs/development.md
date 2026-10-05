@@ -21,26 +21,26 @@ keywords: [SmartSub 开发, Electron, 源码构建, 贡献指南, whisper.cpp ad
 
 ### 环境要求
 
-- Node.js 18+，Yarn
+- Node.js 18+，pnpm
 
 ### 克隆与安装
 
 ```bash
 git clone https://github.com/buxuku/SmartSub.git
 cd SmartSub
-yarn install
+pnpm install
 ```
 
 安装钩子会**自动下载**原生依赖（whisper addon 与 sherpa-onnx 原生库）。如因网络受限下载失败，手动重试：
 
 ```bash
-yarn native:fetch   # 拉取 sherpa-onnx 原生库 + whisper addon
+pnpm native:fetch   # 拉取 sherpa-onnx 原生库 + whisper addon
 ```
 
 ### 启动开发环境
 
 ```bash
-yarn dev
+pnpm dev
 ```
 
 带热重载。开发实例使用独立的用户数据目录（`userData-dev`），不会污染正式安装的配置。
@@ -54,14 +54,14 @@ Python sidecar 源码与构建在 [buxuku/smartsub-py-engine](https://github.com
 
 ```bash
 export PYTHON_ENGINE_CMD="/path/to/smartsub-py-engine/dist/smartsub-engine/smartsub-engine"
-yarn dev
+pnpm dev
 ```
 
 ### 构建打包
 
 ```bash
-yarn build        # nextron build --no-pack（CI 构建产物）
-yarn build:local  # 本地完整打包（electron-builder）
+pnpm build        # nextron build --no-pack（CI 构建产物）
+pnpm build:local  # 本地完整打包（electron-builder）
 ```
 
 构建配置见 `electron-builder.yml`，产物输出到 `dist/`。
@@ -90,7 +90,7 @@ SmartSub/
 
 ## 自行编译 whisper addon（特殊环境）
 
-`addon.node` 是内置 whisper.cpp 引擎的核心库，项目已提供多平台预编译产物（随 `yarn native:fetch` 获取）。仅当你的环境无法使用预编译产物时才需要自行编译：
+`addon.node` 是内置 whisper.cpp 引擎的核心库，项目已提供多平台预编译产物（随 `pnpm native:fetch` 获取）。仅当你的环境无法使用预编译产物时才需要自行编译：
 
 <details>
 <summary>编译步骤</summary>

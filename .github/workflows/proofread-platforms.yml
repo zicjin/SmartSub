@@ -30,20 +30,23 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, windows-2022]
+        os: [ubuntu-24.04, windows-2025]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 25
     env:
       CI: 'true'
       SMARTSUB_E2E_OUTPUT_DIR: artifacts/proofread
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
         with:
-          node-version: 22.14.0
-          cache: npm
+          version: 12.9.1
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
       - name: Install Linux display and audio dependencies
         if: runner.os == 'Linux'
         run: |
@@ -52,13 +55,13 @@ jobs:
           pulseaudio --start --exit-idle-time=-1
           pactl load-module module-null-sink sink_name=smartsub
       - name: Build production application
-        run: npm run build
+        run: pnpm build
       - name: Run Windows keyboard, geometry and crash recovery
         if: runner.os == 'Windows'
         run: node scripts/e2e/proofread-keyboard-performance.mjs --production --complex
       - name: Run Linux keyboard, geometry and crash recovery
         if: runner.os == 'Linux'
-        run: xvfb-run -a --server-args="-screen 0 1920x1080x24" npm run test:e2e:proofread-keyboard -- --production --complex
+        run: xvfb-run -a --server-args="-screen 0 1920x1080x24" pnpm test:e2e:proofread-keyboard -- --production --complex
       - name: Upload evidence
         if: always()
         uses: actions/upload-artifact@v4

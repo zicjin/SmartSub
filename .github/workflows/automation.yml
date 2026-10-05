@@ -7,7 +7,8 @@ on:
       - 'types/**'
       - 'scripts/*automation*'
       - 'package*.json'
-      - 'yarn.lock'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
       - '.github/workflows/automation.yml'
   workflow_dispatch:
 permissions:
@@ -17,29 +18,32 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-14, windows-2022, ubuntu-22.04]
+        os: [macos-15, windows-2025, ubuntu-24.04]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 25
     env:
       CI: 'true'
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
         with:
-          node-version: 22.14.0
-          cache: npm
-      - run: npm ci
+          version: 12.9.1
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y xvfb libnss3 libatk-bridge2.0-0 libgtk-3-0 libgbm1 libasound2 fonts-noto-cjk
-      - run: npm run typecheck
-      - run: npm run build
+      - run: pnpm typecheck
+      - run: pnpm build
       - if: runner.os != 'Linux'
-        run: npm run test:automation
+        run: pnpm test:automation
       - if: runner.os == 'Linux'
-        run: xvfb-run -a npm run test:automation
+        run: xvfb-run -a pnpm test:automation
       - if: runner.os != 'Linux'
-        run: npm run test:automation:desktop
+        run: pnpm test:automation:desktop
       - if: runner.os == 'Linux'
-        run: xvfb-run -a npm run test:automation:desktop
+        run: xvfb-run -a pnpm test:automation:desktop

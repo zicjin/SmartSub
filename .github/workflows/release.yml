@@ -19,7 +19,7 @@ jobs:
       matrix:
         include:
           # macOS ARM64
-          - os: macos-latest
+          - os: macos-15
             arch: arm64
             os_build_arg: mac
             build_args: '--arm64'
@@ -33,25 +33,30 @@ jobs:
             artifact_suffix: macos-x64
 
           # Windows x64 (通用版本，不包含 CUDA)
-          - os: windows-2022
+          - os: windows-2025
             arch: x64
             os_build_arg: win
             artifact_suffix: windows-x64
 
           # Linux x64 (通用版本，不包含 CUDA)
-          - os: ubuntu-22.04
+          - os: ubuntu-24.04
             arch: x64
             os_build_arg: linux
             artifact_suffix: linux-x64
 
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
         with:
-          node-version: 22.14.0
+          version: 12.9.1
+
+      - name: Install Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
 
       - name: Prepare whisper addon (bundled)
         shell: bash
@@ -69,15 +74,15 @@ jobs:
           node scripts/inject-build-info.js
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Compile application code
-        run: yarn build # Assumes 'yarn build' compiles TS to JS, e.g., into the 'app' directory
+        run: pnpm build
 
       - name: Prepare sherpa native libs (bundled)
         shell: bash
         run: |
-          yarn sherpa:fetch
+          pnpm sherpa:fetch
           ls extraResources/sherpa/native
 
       - name: Build Electron app
@@ -91,13 +96,13 @@ jobs:
             export BUILD_PLATFORM="linux"
           fi
           export BUILD_ARCH=${{ matrix.arch }}
-          yarn run electron-builder --${{ matrix.os_build_arg }} --${{ matrix.arch }} ${{ matrix.build_args || '' }} --publish never
+          pnpm exec electron-builder --${{ matrix.os_build_arg }} --${{ matrix.arch }} ${{ matrix.build_args || '' }} --publish never
 
       - name: Bundle size gate (<=200MB)
         # Linux 安装包（AppImage/deb）天然偏大，豁免体积门禁；仅对 mac/win 强制。
         if: matrix.os_build_arg != 'linux'
         shell: bash
-        run: yarn size:check
+        run: pnpm size:check
 
       - name: Stage Artifacts
         shell: bash
@@ -132,19 +137,24 @@ jobs:
 
   publish_release:
     name: Publish GitHub Release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: build_artifacts
     if: startsWith(github.ref, 'refs/tags/v')
     permissions:
       contents: write # Required for softprops/action-gh-release
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.9.1
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: 22.14.0
+          node-version: 24
 
       - name: Download all build artifacts
         uses: actions/download-artifact@v4
@@ -229,7 +239,7 @@ jobs:
           EOF
 
       - name: Install script dependencies
-        run: npm install js-yaml
+        run: pnpm add --ignore-workspace-root-check --ignore-scripts js-yaml
 
       - name: Run YAML merge script
         run: node merge-yaml-and-prepare-release.js
@@ -287,7 +297,7 @@ jobs:
 
   update_homebrew_tap:
     name: Update Homebrew Tap
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: publish_release
     if: startsWith(github.ref, 'refs/tags/v') && !contains(github.ref_name, 'beta')
     steps:
@@ -324,7 +334,7 @@ jobs:
           echo "sha256_x64=$SHA256_X64" >> $GITHUB_OUTPUT
 
       - name: Checkout Homebrew Tap
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: buxuku/homebrew-tap
           token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
