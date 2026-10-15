@@ -16,7 +16,7 @@ docs/.docusaurus
 Project
 sample
 .specs/
-.agents/
+
 # whisper.cpp 原生 addon 按平台体积大且因平台而异，改为按需 fetch（见 scripts/fetch-whisper-addon.mjs），不入库。
 extraResources/addons/*.node
 extraResources/py-base/
@@ -47,3 +47,5 @@ __pycache__/
 
 .*/skills/herdr
 .*/skills/opencode-subagent
+
+.intlayer
