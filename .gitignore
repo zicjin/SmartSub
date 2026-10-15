@@ -20,6 +20,11 @@ sample
 # whisper.cpp 原生 addon 按平台体积大且因平台而异，改为按需 fetch（见 scripts/fetch-whisper-addon.mjs），不入库。
 extraResources/addons/*.node
 extraResources/py-base/
+# Generated self-contained FireRedPunc runtime is assembled by release CI.
+extraResources/firered-punc/runtime/*
+!extraResources/firered-punc/runtime/main.py
+extraResources/firered-punc/runtime.previous/
+extraResources/firered-punc/.runtime-*/
 extraResources/sherpa/native/
 .superpowers/
 .longgap/

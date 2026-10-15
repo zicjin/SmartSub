@@ -75,6 +75,10 @@ import {
   shouldExtractAudioForEmbeddedSubtitle,
   getSpeakerDiarizationMetadataWarning,
 } from '../../types/speakerDiarization';
+import {
+  normalizeFireRedBilingualSrtContent,
+  normalizeFireRedSrtContent,
+} from './fireRedPunc/text';
 
 /**
  * 处理任务错误
@@ -141,6 +145,30 @@ async function stripSourceSubtitlePunctuation(
   } catch (error) {
     if (isTaskCancelledError(error) || isTaskCancelled()) throw error;
     logMessage(`source punctuation removal failed: ${error}`, 'warning');
+  }
+}
+
+/** FireRedPunc keeps punctuation for translation input; normalize the source
+ * delivery after translation has consumed the punctuated canonical SRT. */
+async function normalizeFireRedSourcePunctuation(
+  srtFile: string,
+  fileName: string,
+  bilingual = false,
+  translateContent?: string,
+): Promise<void> {
+  try {
+    throwIfTaskCancelled();
+    const original = await fs.promises.readFile(srtFile, 'utf-8');
+    const normalized = bilingual
+      ? normalizeFireRedBilingualSrtContent(original, translateContent)
+      : normalizeFireRedSrtContent(original);
+    if (normalized !== original) {
+      await fs.promises.writeFile(srtFile, normalized, 'utf-8');
+      logMessage(`normalized FireRed cue endings: ${fileName}`, 'info');
+    }
+  } catch (error) {
+    if (isTaskCancelledError(error) || isTaskCancelled()) throw error;
+    logMessage(`FireRed cue ending normalization failed: ${error}`, 'warning');
   }
 }
 
@@ -305,8 +333,8 @@ async function processFileImpl(
           Boolean(
             (file.tempTranslatedSrtFile &&
               fs.existsSync(file.tempTranslatedSrtFile)) ||
-              file.proofreadDataFile ||
-              (file.translatedSrtFile && fs.existsSync(file.translatedSrtFile)),
+            file.proofreadDataFile ||
+            (file.translatedSrtFile && fs.existsSync(file.translatedSrtFile)),
           ),
         dubbingDone:
           !invalidateEmbeddedResult &&
@@ -400,8 +428,8 @@ async function processFileImpl(
     // （绝不改写/转换/删除用户的字幕文件）
     const hasProvidedSubtitle = Boolean(
       !isSubtitleFile &&
-        file.providedSubtitlePath &&
-        fs.existsSync(file.providedSubtitlePath),
+      file.providedSubtitlePath &&
+      fs.existsSync(file.providedSubtitlePath),
     );
     // Sidecar is regenerated after transcription/diagnostics. Clear the old
     // pointer on a fresh run so the proofread page cannot open stale cues
@@ -466,8 +494,8 @@ async function processFileImpl(
     ): Promise<boolean> => {
       const hasDownstreamStages = Boolean(
         formData?.dub ||
-          formData?.compose ||
-          shouldDockAtSubtitleGate(formData, file as any),
+        formData?.compose ||
+        shouldDockAtSubtitleGate(formData, file as any),
       );
 
       if (translationActive && !translateOk) {
@@ -540,7 +568,7 @@ async function processFileImpl(
         !translationActive ||
         Boolean(
           (file as any).translateSubtitle === 'done' &&
-            !file.translationFailures?.length,
+          !file.translationFailures?.length,
         );
       const { translateOk } = file.subtitleExportCheckpoint;
       await runSubtitleExportStage(
@@ -558,15 +586,15 @@ async function processFileImpl(
     // 仅带附加阶段的任务参与（resume 判定已含产物存在性校验）。
     const skipSubtitleSegment = Boolean(
       resume &&
-        (previousExportSubtitle === undefined ||
-          previousExportSubtitle === 'done') &&
-        (isSubtitleFile ? true : resume.subtitleProduced) &&
-        (!translationActive || resume.translateDone) &&
-        (!speakerDiarizationStageActive ||
-          (previousSpeakerDiarization === 'done' &&
-            previousProofreadDataReady === 'done' &&
-            file.proofreadDataFile &&
-            fs.existsSync(file.proofreadDataFile))),
+      (previousExportSubtitle === undefined ||
+        previousExportSubtitle === 'done') &&
+      (isSubtitleFile ? true : resume.subtitleProduced) &&
+      (!translationActive || resume.translateDone) &&
+      (!speakerDiarizationStageActive ||
+        (previousSpeakerDiarization === 'done' &&
+          previousProofreadDataReady === 'done' &&
+          file.proofreadDataFile &&
+          fs.existsSync(file.proofreadDataFile))),
     );
     if (skipSubtitleSegment) {
       file.exportSubtitle = 'done';
@@ -640,7 +668,7 @@ async function processFileImpl(
         !translationActive ||
         Boolean(
           (file as any).translateSubtitle === 'done' &&
-            !file.translationFailures?.length,
+          !file.translationFailures?.length,
         );
       await runPipelineStages(translateOk);
       logMessage(`process file done ${fileName}`, 'info');
@@ -928,6 +956,25 @@ async function processFileImpl(
       getDesiredChineseScript(sourceLanguage)
     ) {
       await stripSourceSubtitlePunctuation(file.srtFile, fileName);
+    }
+
+    if (
+      !isSubtitleFile &&
+      shouldGenerateSubtitle &&
+      !hasProvidedSubtitle &&
+      formData?.transcriptionEngine === 'fireRedAsr' &&
+      file.srtFile &&
+      fs.existsSync(file.srtFile)
+    ) {
+      await normalizeFireRedSourcePunctuation(file.srtFile, fileName);
+      if (file.translatedSrtFile && fs.existsSync(file.translatedSrtFile)) {
+        await normalizeFireRedSourcePunctuation(
+          file.translatedSrtFile,
+          `${fileName} (bilingual)`,
+          true,
+          formData?.translateContent,
+        );
+      }
     }
 
     // 通读摘要：翻译前、精修/文稿匹配之后。失败降级，不阻断。

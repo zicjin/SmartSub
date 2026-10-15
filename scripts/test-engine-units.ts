@@ -1521,6 +1521,7 @@ const fireRedReady = {
   transcriptionEngine: 'fireRedAsr' as const,
   fireRedEngineInstalled: true,
   fireRedVadInstalled: true,
+  fireRedPuncReady: true,
   fireRedModelsInstalled: ['fire-red-asr-large-zh-en', FIRERED_AED2_MODEL_ID],
 };
 eq(

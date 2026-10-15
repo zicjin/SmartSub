@@ -45,6 +45,7 @@ interface FireRedModelStatus {
   vadInstalled: boolean;
   ready: boolean;
   models: { id: FireRedModelId; installed: boolean }[];
+  punc?: { installed: boolean; runtimeInstalled: boolean };
 }
 
 const FIRE_RED_MODEL_IDS: FireRedModelId[] = [
@@ -93,7 +94,8 @@ const FireRedModelSection: React.FC<{ onUpdate?: () => void }> = ({
   useEffect(() => {
     load();
     const isFireRedKey = (key: unknown): key is string =>
-      typeof key === 'string' && key.startsWith('firered:');
+      typeof key === 'string' &&
+      (key.startsWith('firered:') || key === 'firered-punc');
 
     const unsub = window?.ipc?.on(
       'downloadProgress',
@@ -177,6 +179,16 @@ const FireRedModelSection: React.FC<{ onUpdate?: () => void }> = ({
       onUpdate?.();
     } else {
       toast.error(r?.error || 'Failed to delete model');
+    }
+  };
+
+  const handleDeletePunc = async () => {
+    const r = await window?.ipc?.invoke('deleteFireRedPuncModel');
+    if (r?.success) {
+      await load();
+      onUpdate?.();
+    } else {
+      toast.error(r?.error || 'Failed to delete FireRedPunc model');
     }
   };
 
@@ -299,6 +311,48 @@ const FireRedModelSection: React.FC<{ onUpdate?: () => void }> = ({
                 />
               );
             })}
+          </CardContent>
+        </Card>
+      </section>
+
+      <section className="space-y-2">
+        <div className="flex items-baseline gap-2 px-1">
+          <Mic className="h-4 w-4 self-center text-muted-foreground" />
+          <h3 className="text-sm font-semibold">
+            {t('engines.fireRedAsr.puncTitle')}
+          </h3>
+        </div>
+        <Card>
+          <CardContent className="flex items-center justify-between gap-3 p-3">
+            <div className="space-y-1">
+              <div className="text-sm font-medium">
+                {t('engines.fireRedAsr.puncName')}
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {status?.punc?.installed && status.punc.runtimeInstalled
+                  ? t('engines.fireRedAsr.puncReady')
+                  : status?.punc?.installed
+                    ? t('engines.fireRedAsr.puncRuntimeMissing')
+                    : downloading
+                      ? t('engines.fireRedAsr.puncDownloading', {
+                          percent: Math.round(
+                            (progress['firered-punc'] ?? 0) * 100,
+                          ),
+                        })
+                      : t('engines.fireRedAsr.puncMissing')}
+              </div>
+            </div>
+            {status?.punc?.installed && (
+              <Button
+                size="sm"
+                variant="ghost"
+                className="gap-1.5 text-muted-foreground hover:text-destructive"
+                onClick={handleDeletePunc}
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                {t('engines.fireRedAsr.puncDelete')}
+              </Button>
+            )}
           </CardContent>
         </Card>
       </section>

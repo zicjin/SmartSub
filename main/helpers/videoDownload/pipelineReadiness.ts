@@ -14,7 +14,7 @@ import {
 } from '../qwenModelCatalog';
 import {
   getInstalledFireRedModels,
-  isFireRedVadInstalled,
+  isFireRedReady,
 } from '../fireRedModelCatalog';
 import {
   getInstalledParakeetModels,
@@ -79,7 +79,7 @@ function assertAsrReady(form: TaskSubmission['formData']): void {
     case 'fireRedAsr':
       ready =
         isSherpaLibInstalled() &&
-        isFireRedVadInstalled() &&
+        isFireRedReady() &&
         getInstalledFireRedModels().some((id) => id === model);
       break;
     case 'parakeet':

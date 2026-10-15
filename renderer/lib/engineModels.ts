@@ -39,6 +39,7 @@ export interface EngineModelInfo {
   fireRedModelsInstalled?: string[];
   /** fireRed 运行库（sherpa-onnx，与 funasr 同库）是否已安装 */
   fireRedEngineInstalled?: boolean;
+  fireRedPuncReady?: boolean;
   /** Parakeet 共享 silero VAD 是否就绪 */
   parakeetVadInstalled?: boolean;
   /** Parakeet 已安装的模型 id 列表 */
@@ -142,6 +143,7 @@ export function hasModelsForEngine(
   if (engine === 'fireRedAsr') {
     return (
       !!info?.fireRedVadInstalled &&
+      !!info?.fireRedPuncReady &&
       (info?.fireRedModelsInstalled?.length ?? 0) > 0
     );
   }
@@ -295,7 +297,11 @@ export function getEngineModelGroups(
   }
 
   const fireRedModels = info?.fireRedModelsInstalled ?? [];
-  if (info?.fireRedVadInstalled && fireRedModels.length) {
+  if (
+    info?.fireRedVadInstalled &&
+    info?.fireRedPuncReady &&
+    fireRedModels.length
+  ) {
     groups.push({ engine: 'fireRedAsr', models: fireRedModels });
   }
 
@@ -358,6 +364,7 @@ export function hasAnyModelAnyEngine(
   }
   if (
     info?.fireRedVadInstalled &&
+    info?.fireRedPuncReady &&
     (info?.fireRedModelsInstalled?.length ?? 0) > 0
   ) {
     return true;

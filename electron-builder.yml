@@ -1,5 +1,6 @@
 appId: com.example.smartsub
 productName: SmartSub
+beforePack: ./scripts/check-firered-punc-before-pack.cjs
 copyright: Copyright © 2024 buxuku
 directories:
   output: dist
@@ -45,6 +46,13 @@ mac:
       to: ./extraResources/sample-onboarding.mp3
     - from: ./extraResources/sherpa/
       to: ./extraResources/sherpa/
+      filter:
+        - '**/*'
+    # FireRedPunc is a macOS arm64-only companion runtime. The directory is
+    # intentionally separate from sherpa so its Python/Torch dependencies never
+    # enter the other ASR runtimes.
+    - from: ./extraResources/firered-punc/
+      to: ./extraResources/firered-punc/
       filter:
         - '**/*'
 win:

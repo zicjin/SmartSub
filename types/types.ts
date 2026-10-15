@@ -45,6 +45,10 @@ export interface ISystemInfo {
   fireRedModelsInstalled?: string[];
   /** fireRed 模型根目录（固定路径，仅展示用，不可更改） */
   fireRedModelsPath?: string;
+  /** FireRedPunc shared companion readiness. */
+  fireRedPuncModelInstalled?: boolean;
+  fireRedPuncRuntimeInstalled?: boolean;
+  fireRedPuncReady?: boolean;
   /** Parakeet 引擎包（sherpa-onnx，与其它本地 sherpa ASR 共用）是否已安装 */
   parakeetEngineInstalled?: boolean;
   /** Parakeet 共用 silero VAD 是否已安装 */
@@ -97,6 +101,9 @@ export interface IFiles extends SubtitleOutputFiles {
   directory: string;
   extractAudio?: boolean;
   extractSubtitle?: boolean;
+  /** FireRed-only punctuation restoration stage status. */
+  fireRedPunc?: '' | 'loading' | 'done' | 'error';
+  fireRedPuncError?: string;
   translateSubtitle?: boolean;
   /** 角色分离独立阶段状态；undefined 表示尚未进入该阶段。 */
   speakerDiarization?: '' | 'loading' | 'done' | 'error';
@@ -209,9 +216,7 @@ export const TRANSLATION_INCOMPLETE_FOR_COMPOSE =
   'TRANSLATION_INCOMPLETE_FOR_COMPOSE';
 
 export type TaskProjectType =
-  | 'generateAndTranslate'
-  | 'generateOnly'
-  | 'translateOnly';
+  'generateAndTranslate' | 'generateOnly' | 'translateOnly';
 
 /** 一次任务工程：任务维度记录，下挂文件列表 */
 export interface TaskProject {
@@ -291,9 +296,7 @@ export interface IFormData {
   /** 优先直提媒体内封文本字幕；显式 false 时忽略内封字幕并强制使用 ASR。缺省 true。 */
   useEmbeddedSubtitles?: boolean;
   translateContent:
-    | 'onlyTranslate'
-    | 'sourceAndTranslate'
-    | 'translateAndSource';
+    'onlyTranslate' | 'sourceAndTranslate' | 'translateAndSource';
   targetSrtSaveOption: string;
   sourceSrtSaveOption?: string;
   customTargetSrtFileName: string;

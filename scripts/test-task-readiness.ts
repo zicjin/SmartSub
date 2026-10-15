@@ -175,7 +175,14 @@ async function main() {
     ],
   ]) {
     const formData = { ...base.formData, transcriptionEngine: engine, model };
-    check({ formData, systemInfo: { [list]: [model], [vad]: true } });
+    check({
+      formData,
+      systemInfo: {
+        [list]: [model],
+        [vad]: true,
+        ...(engine === 'fireRedAsr' ? { fireRedPuncReady: true } : {}),
+      },
+    });
     check(
       { formData, systemInfo: { [list]: [model], [vad]: false } },
       'model_unavailable',

@@ -26,13 +26,26 @@ import {
   RangeNotSupportedError,
 } from './download/parallelDownloader';
 import { extractArchive } from './download/extractArchive';
+import {
+  FIRERED_PUNC_MODEL_ID,
+  FIRERED_PUNC_REQUIRED_FILES,
+  getFireRedPuncModelDir,
+  isFireRedPuncModelInstalled,
+  validateFireRedPuncModelLayout,
+} from './fireRedPunc/catalog';
 
 const CONNECT_TIMEOUT = 30_000;
 const CANCELLED = 'Download cancelled';
+const FIRERED_PUNC_REPO = 'xukaituo/FireRedPunc';
+const FIRERED_PUNC_PROGRESS_KEY = 'firered-punc';
 
 /** 进度 key：firered:<modelId>，与 funasr:<id> / qwen:<id> 同构，渲染层按前缀路由。 */
 export function getFireRedProgressKey(id: FireRedModelId): string {
   return `firered:${id}`;
+}
+
+export function getFireRedPuncProgressKey(): string {
+  return FIRERED_PUNC_PROGRESS_KEY;
 }
 
 function resolveRedirectUrl(currentUrl: string, location: string): string {
@@ -186,7 +199,16 @@ export class FireRedModelDownloader {
     id: FireRedModelId,
     source: FireRedModelSource = FIRERED_DEFAULT_SOURCE,
   ): Promise<boolean> {
-    if (isFireRedModelInstalled(id)) return true;
+    if (isFireRedModelInstalled(id)) {
+      this.abortController = new AbortController();
+      await this.ensurePuncModel();
+      this.abortController = null;
+      return true;
+    }
+    // The punctuation model is shared by both ASR variants. Install it before
+    // committing an ASR model so a successful ASR download never reports a
+    // runnable but punctuation-free FireRed engine.
+    await this.ensurePuncModel();
     const spec = FIRERED_MODELS[id];
     const key = getFireRedProgressKey(id);
     this.currentKey = key;
@@ -251,6 +273,59 @@ export class FireRedModelDownloader {
     this.sendFinal(key, 0);
     this.currentKey = null;
     throw lastError instanceof Error ? lastError : new Error(String(lastError));
+  }
+
+  async ensurePuncModel(): Promise<boolean> {
+    if (isFireRedPuncModelInstalled()) return true;
+    const staging = path.join(
+      getFireRedModelsRoot(),
+      `.${FIRERED_PUNC_MODEL_ID}.staging`,
+    );
+    const dest = getFireRedPuncModelDir();
+    fs.rmSync(staging, { recursive: true, force: true });
+    fs.mkdirSync(staging, { recursive: true });
+    const files = [...FIRERED_PUNC_REQUIRED_FILES];
+    const total = files.length;
+    this.currentKey = FIRERED_PUNC_PROGRESS_KEY;
+    this.update({
+      status: 'downloading',
+      downloaded: 0,
+      total,
+      progress: 0,
+      error: undefined,
+    });
+    try {
+      for (let index = 0; index < files.length; index += 1) {
+        if (this.abortController?.signal.aborted) throw new Error(CANCELLED);
+        const relative = files[index];
+        const target = path.join(staging, relative);
+        fs.mkdirSync(path.dirname(target), { recursive: true });
+        const url = `https://modelscope.cn/models/${FIRERED_PUNC_REPO}/resolve/master/${relative}`;
+        await this.downloadSingle(url, target, this.abortController?.signal);
+        this.update({ downloaded: index + 1, total });
+      }
+      const layout = validateFireRedPuncModelLayout(staging);
+      if (!layout.ok)
+        throw new Error(
+          `FireRedPunc model missing: ${layout.missing.join(', ')}`,
+        );
+      fs.rmSync(dest, { recursive: true, force: true });
+      fs.renameSync(staging, dest);
+      this.progress = { ...this.progress, status: 'completed', progress: 100 };
+      this.sendFinal(FIRERED_PUNC_PROGRESS_KEY, 1);
+      return true;
+    } catch (error) {
+      fs.rmSync(staging, { recursive: true, force: true });
+      this.progress = {
+        ...this.progress,
+        status: 'error',
+        error: String(error),
+      };
+      this.sendFinal(FIRERED_PUNC_PROGRESS_KEY, 0);
+      throw error;
+    } finally {
+      this.currentKey = null;
+    }
   }
 
   /**

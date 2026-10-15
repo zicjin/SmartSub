@@ -24,9 +24,23 @@ import { resplitSubtitleCues } from '../subtitleSegmentation';
 import { buildFireRedParams } from './fireRedParams';
 import { resolveEffectiveSettings } from './outcomePresets';
 import type { TranscribeContext, TranscriptionEngineAdapter } from './types';
+import {
+  FireRedPuncRuntime,
+  getFireRedPuncRuntime,
+} from '../fireRedPunc/runtime';
+import { getFireRedPuncReadiness } from '../fireRedPunc/catalog';
+import { normalizeFireRedCueText } from '../fireRedPunc/text';
 
 /** 在途转写 id 集合：任务级并发下可能同时存在多个（排队+执行），取消须精确到 id。 */
 const activeTranscribeIds = new Set<string>();
+
+function fireRedPuncRuntimeInstalled(): boolean {
+  try {
+    return FireRedPuncRuntime.isInstalled();
+  } catch {
+    return false;
+  }
+}
 
 type FireRedSelection = NonNullable<ReturnType<typeof resolveFireRedSelection>>;
 
@@ -113,7 +127,7 @@ async function transcribeFireRed(ctx: TranscribeContext): Promise<string> {
   }
   if (!isFireRedReady()) {
     throw new Error(
-      'firered model not installed. Download FireRedASR + silero-VAD from Resource Hub > Models.',
+      'FireRed is not ready. Install the FireRedASR model, shared FireRedPunc model and firered-punc runtime on macOS arm64.',
     );
   }
 
@@ -172,12 +186,70 @@ async function transcribeFireRed(ctx: TranscribeContext): Promise<string> {
     })),
   });
 
+  const rawSubtitles = (transcription?.segments || []).map(
+    subtitleCueFromSegment,
+  );
+  // Persist the ASR checkpoint before punctuation. If the PyTorch sidecar fails
+  // or the user cancels, the recognized text remains available for retry and
+  // diagnostics instead of being lost with the failed task.
+  await fs.promises.writeFile(srtFile, formatSrtContent(rawSubtitles));
+  const punc = getFireRedPuncRuntime();
+  file.fireRedPunc = 'loading';
+  delete file.fireRedPuncError;
+  event.sender.send('taskFileChange', {
+    ...file,
+    fireRedPunc: 'loading',
+  });
+  event.sender.send('taskProgressChange', file, 'fireRedPunc', 0);
+  ctx.onActivity?.({ phase: 'correcting', units: [] });
+  let punctuatedTexts: string[];
+  try {
+    punctuatedTexts = await punc.punctuate(
+      rawSubtitles.map((cue) => cue[2]),
+      signal,
+      (percent) =>
+        event.sender.send('taskProgressChange', file, 'fireRedPunc', percent),
+    );
+  } catch (error) {
+    if (signal?.aborted || String(error).includes('cancelled')) {
+      file.fireRedPunc = '';
+      event.sender.send('taskFileChange', { ...file, fireRedPunc: '' });
+      throw new TaskCancelledError();
+    }
+    const message = error instanceof Error ? error.message : String(error);
+    file.fireRedPunc = 'error';
+    file.fireRedPuncError = message;
+    event.sender.send('taskFileChange', {
+      ...file,
+      fireRedPunc: 'error',
+      fireRedPuncError: message,
+    });
+    throw new Error(`FireRedPunc punctuation restoration failed: ${message}`, {
+      cause: error,
+    });
+  }
+  const punctuatedSubtitles = rawSubtitles.map(
+    (cue, index) =>
+      [cue[0], cue[1], punctuatedTexts[index]] as [string, string, string],
+  );
+  file.fireRedPunc = 'done';
+  event.sender.send('taskProgressChange', file, 'fireRedPunc', 100);
+  event.sender.send('taskFileChange', { ...file, fireRedPunc: 'done' });
   const subtitles = trimSubtitleTrailingSilence(
     resplitSubtitleCues(
-      (transcription?.segments || []).map(subtitleCueFromSegment),
+      punctuatedSubtitles,
       formData as Record<string, unknown>,
     ),
     tempAudioFile,
+  ).map(
+    ([start, end, text]) =>
+      [
+        start,
+        end,
+        formData.taskType === 'generateAndTranslate'
+          ? text
+          : normalizeFireRedCueText(text),
+      ] as [string, string, string],
   );
   const formattedSrt = formatSrtContent(subtitles);
   ctx.onActivity?.({ phase: 'saving' });
@@ -200,6 +272,20 @@ export const fireRedEngineAdapter: TranscriptionEngineAdapter = {
         state: 'not_installed',
         message: 'sherpa runtime not downloaded',
       };
+    }
+    const puncReadiness = getFireRedPuncReadiness(
+      fireRedPuncRuntimeInstalled(),
+    );
+    if (!puncReadiness.ready) {
+      const detail =
+        puncReadiness.reason === 'unsupported-platform'
+          ? 'FireRedPunc currently supports macOS arm64 only.'
+          : puncReadiness.reason === 'runtime-missing'
+            ? 'firered-punc runtime is not installed.'
+            : puncReadiness.reason === 'model-missing'
+              ? `FireRedPunc model is incomplete (${puncReadiness.missing.join(', ')}).`
+              : 'FireRedPunc is not ready.';
+      return { state: 'not_installed', message: detail };
     }
     if (!isFireRedReady()) {
       return {

@@ -58,6 +58,12 @@ jobs:
         with:
           node-version: 24
 
+      - name: Install uv
+        if: matrix.os_build_arg == 'mac' && matrix.arch == 'arm64'
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.8.17'
+
       - name: Prepare whisper addon (bundled)
         shell: bash
         run: node scripts/fetch-whisper-addon.mjs --arch=${{ matrix.arch }}
@@ -75,6 +81,19 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Prepare bundled FireRedPunc runtime
+        if: matrix.os_build_arg == 'mac' && matrix.arch == 'arm64'
+        shell: bash
+        run: |
+          pnpm prepare:firered-punc-runtime
+          pnpm exec prettier --check scripts/prepare-firered-punc-runtime.mjs
+          BUILD_PLATFORM=darwin BUILD_ARCH=arm64 pnpm exec node scripts/prepare-firered-punc-runtime.mjs --check-only
+
+      - name: Exclude unsupported FireRedPunc resources
+        if: matrix.os_build_arg == 'mac' && matrix.arch != 'arm64'
+        shell: bash
+        run: rm -rf extraResources/firered-punc
 
       - name: Compile application code
         run: pnpm build
@@ -102,7 +121,14 @@ jobs:
         # Linux 安装包（AppImage/deb）天然偏大，豁免体积门禁；仅对 mac/win 强制。
         if: matrix.os_build_arg != 'linux'
         shell: bash
-        run: pnpm size:check
+        run: |
+          if [[ "${{ matrix.os_build_arg }}" == "mac" && "${{ matrix.arch }}" == "arm64" ]]; then
+            # The arm64-only FireRedPunc runtime includes PyTorch and raises
+            # the signed app's expected size above the generic 200MB limit.
+            BUNDLE_LIMIT_MB=500 pnpm size:check
+          else
+            pnpm size:check
+          fi
 
       - name: Stage Artifacts
         shell: bash

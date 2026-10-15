@@ -13,6 +13,10 @@ import {
   type LayoutCheckResult,
   type ModelFileSizeExpectation,
 } from './modelImport';
+import {
+  getFireRedPuncReadiness,
+  isFireRedPuncModelInstalled,
+} from './fireRedPunc/catalog';
 
 /** fireRed 模型根目录：单独覆盖 > 统一存储目录 > userData/models/firered */
 export function getFireRedModelsRoot(): string {
@@ -301,9 +305,26 @@ export function resolveFireRedSelection(
   return { id: chosen };
 }
 
-/** fireRed 转写就绪 = 至少一个 fireRed 模型 + 共享 silero VAD 均已安装。 */
+/** FireRed 转写就绪 = ASR、共享 VAD、FireRedPunc 模型和运行时均完整。 */
 export function isFireRedReady(): boolean {
-  return getInstalledFireRedModels().length > 0 && isFireRedVadInstalled();
+  // FireRedPunc is a required companion. Do not expose a partial ASR install
+  // as ready because the first transcription would otherwise produce the old
+  // punctuation-free output.
+  let runtimeInstalled = false;
+  try {
+    // Lazy import avoids loading Electron/runtime paths during pure catalog use.
+    const { FireRedPuncRuntime } =
+      require('./fireRedPunc/runtime') as typeof import('./fireRedPunc/runtime');
+    runtimeInstalled = FireRedPuncRuntime.isInstalled();
+  } catch {
+    runtimeInstalled = false;
+  }
+  return (
+    getInstalledFireRedModels().length > 0 &&
+    isFireRedVadInstalled() &&
+    isFireRedPuncModelInstalled() &&
+    getFireRedPuncReadiness(runtimeInstalled).ready
+  );
 }
 
 export function deleteFireRedModel(id: FireRedModelId): void {

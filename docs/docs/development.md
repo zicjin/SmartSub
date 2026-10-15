@@ -66,6 +66,20 @@ pnpm build:local  # 本地完整打包（electron-builder）
 
 构建配置见 `electron-builder.yml`，产物输出到 `dist/`。
 
+### FireRedPunc 运行时
+
+macOS arm64 的发布包会把独立的 Python/Torch FireRedPunc 运行时放入
+`extraResources/firered-punc/runtime/`。运行时由 `uv` 在打包前生成，模型权重不会随包发布，
+而是在资源中心由用户选择下载。Apple Silicon 本地打包需要先安装 `uv`，然后运行：
+
+```bash
+pnpm prepare:firered-punc-runtime
+pnpm build:local
+```
+
+直接执行 macOS arm64 的 `electron-builder` 时，缺少完整运行时会使打包失败；Windows、Linux 和
+macOS Intel 首版不提供 FireRedPunc。
+
 ## 项目结构
 
 ```

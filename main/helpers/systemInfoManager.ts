@@ -88,6 +88,15 @@ import {
   validateFireRedModelLayout,
 } from './fireRedModelCatalog';
 import {
+  FIRERED_PUNC_MODEL_ID,
+  isFireRedPuncModelInstalled,
+  getFireRedPuncReadiness,
+} from './fireRedPunc/catalog';
+import {
+  FireRedPuncRuntime,
+  shutdownFireRedPuncRuntime,
+} from './fireRedPunc/runtime';
+import {
   getParakeetModelDownloader,
   getParakeetProgressKey,
 } from './parakeetModelDownloader';
@@ -338,6 +347,11 @@ export function setupSystemInfoManager(mainWindow: BrowserWindow) {
       fireRedVadInstalled: isFireRedVadInstalled(),
       fireRedModelsInstalled: getInstalledFireRedModels(),
       fireRedModelsPath: getFireRedModelsRoot(),
+      fireRedPuncModelInstalled: isFireRedPuncModelInstalled(),
+      fireRedPuncRuntimeInstalled: FireRedPuncRuntime.isInstalled(),
+      fireRedPuncReady: getFireRedPuncReadiness(
+        FireRedPuncRuntime.isInstalled(),
+      ).ready,
       parakeetEngineInstalled: isSherpaLibInstalled(),
       parakeetVadInstalled: isParakeetVadInstalled(),
       parakeetModelsInstalled: getInstalledParakeetModels(),
@@ -647,6 +661,12 @@ export function setupSystemInfoManager(mainWindow: BrowserWindow) {
     engineInstalled: isSherpaLibInstalled(),
     vadInstalled: isFireRedVadInstalled(),
     ready: isFireRedReady(),
+    punc: {
+      id: FIRERED_PUNC_MODEL_ID,
+      installed: isFireRedPuncModelInstalled(),
+      runtimeInstalled: FireRedPuncRuntime.isInstalled(),
+      readiness: getFireRedPuncReadiness(FireRedPuncRuntime.isInstalled()),
+    },
     models: (Object.keys(FIRERED_MODELS) as FireRedModelId[]).map((id) => ({
       id,
       installed: isFireRedModelInstalled(id),
@@ -667,6 +687,17 @@ export function setupSystemInfoManager(mainWindow: BrowserWindow) {
       }
     },
   );
+
+  ipcMain.handle('deleteFireRedPuncModel', async () => {
+    try {
+      await shutdownFireRedPuncRuntime();
+      const { deleteFireRedPuncModel } = await import('./fireRedPunc/catalog');
+      deleteFireRedPuncModel();
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: String(error) };
+    }
+  });
 
   ipcMain.handle(
     'downloadParakeetModel',

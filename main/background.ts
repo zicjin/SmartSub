@@ -59,6 +59,7 @@ import {
   setMainWindowForEngine,
 } from './helpers/ipcEngineHandlers';
 import { shutdownPythonRuntime } from './helpers/pythonRuntime';
+import { shutdownFireRedPuncRuntime } from './helpers/fireRedPunc/runtime';
 import { maybeAutoCheckPyEngineUpdate } from './helpers/pythonRuntime/autoUpdateCheck';
 import { cleanupLegacyPyEngine } from './helpers/pythonRuntime/legacyCleanup';
 import { applyProxyFromSettings } from './helpers/network/proxyManager';
@@ -148,7 +149,10 @@ app.on('before-quit', (event) => {
     shutdownVideoDownloads();
     shutdownToolboxProcesses();
     cancelProofreadWaveforms();
-    void shutdownPythonRuntime().finally(() => {
+    void Promise.all([
+      shutdownPythonRuntime(),
+      shutdownFireRedPuncRuntime(),
+    ]).finally(() => {
       app.exit(0);
     });
   }
