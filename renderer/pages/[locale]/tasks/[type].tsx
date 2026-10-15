@@ -68,6 +68,7 @@ import useTaskDependencies from 'hooks/useTaskDependencies';
 import useUnifiedTaskConfig from 'hooks/useUnifiedTaskConfig';
 import useIpcCommunication from 'hooks/useIpcCommunication';
 import { useConfirmOrUndo } from 'hooks/useConfirmOrUndo';
+import { useUndoableFileRemoval } from 'hooks/useUndoableFileRemoval';
 import { useHotkeys } from 'hooks/useHotkeys';
 import {
   useTaskProjectPersistence,
@@ -98,6 +99,7 @@ import {
   newTaskDefaults,
 } from '../../../../types/taskConfig';
 import { validateTaskConfigReady } from 'lib/taskReadiness';
+import { isTaskRouteHydrated, taskRouteKey } from 'lib/taskRoute';
 import { getProofreadSourcePath } from '../../../../types/subtitleOutput';
 import { useTranslation } from 'next-i18next/pages';
 import { toast } from 'sonner';
@@ -120,6 +122,7 @@ export default function TaskPage() {
   const [taskStatus, setTaskStatus] = useState('idle');
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [refinePopoverOpen, setRefinePopoverOpen] = useState(false);
+  const [summaryPopoverOpen, setSummaryPopoverOpen] = useState(false);
   const [bannerDismissed, setBannerDismissed] = useState(false);
   /** 固定任务的配置快照（附加阶段/参考文稿）：阶段轨道与横幅按它渲染 */
   const [configSnapshot, setConfigSnapshot] = useState<any>(null);
@@ -146,7 +149,9 @@ export default function TaskPage() {
   const loadedFilesRef = useRef<any[] | null>(null);
   const projectIdRef = useRef<string | null>(null);
   const [manuscriptPool, setManuscriptPool] = useState<IFiles[]>([]);
-  const routeKey = `${slug}:${typeof router.query.project === 'string' ? router.query.project : ''}`;
+  const queryProject =
+    typeof router.query.project === 'string' ? router.query.project : '';
+  const routeKey = taskRouteKey(slug, queryProject);
   const [hydratedRoute, setHydratedRoute] = useState<string | null>(null);
   const [projectLoadError, setProjectLoadError] = useState<string | null>(null);
   const taskErrors = [
@@ -195,8 +200,12 @@ export default function TaskPage() {
   const loadedSlugRef = useRef('');
   const baselineRef = useRef('');
   const editedProjectsRef = useRef(new Set<string>());
+  // 首次自动保存后页面会把 ?project= 补进 URL：工程已装载，不能因此退回整页加载态，
+  // 否则配置条被卸载重建，已打开的弹层（词库等）会被关掉（见 lib/taskRoute）。
   const projectReady = Boolean(
-    projectId && hydratedRoute === routeKey && configLoaded,
+    projectId &&
+    isTaskRouteHydrated({ hydratedRoute, slug, queryProject, projectId }) &&
+    configLoaded,
   );
   const projectPayload: TaskProjectSave | null =
     projectReady && typeDef
@@ -945,6 +954,25 @@ export default function TaskPage() {
     });
   };
 
+  // 移除单个文件：立即生效，5 秒内可撤销并按原位置恢复（与「清空列表」同一套交互）
+  const announceFileRemoved = useCallback(
+    (file: { fileName?: string; fileExtension?: string }, undo: () => void) =>
+      confirmOrUndo(
+        t('rowRemoved', {
+          name: `${file.fileName ?? ''}${file.fileExtension ?? ''}`,
+        }),
+        undo,
+      ),
+    [confirmOrUndo, t],
+  );
+  const handleRemoveFile = useUndoableFileRemoval({
+    files,
+    setFiles,
+    locked: queueBusy,
+    projectIdRef,
+    onRemoved: announceFileRemoved,
+  });
+
   const handleProofread = useCallback(
     (file: IFiles) => {
       if (!typeDef) return;
@@ -1108,6 +1136,9 @@ export default function TaskPage() {
 
   const handleDragLeave = (e: React.DragEvent) => {
     e.preventDefault();
+    // 指针移到面板内的子元素上也会触发 dragleave；只有真正离开面板才收起浮层，
+    // 否则拖动时浮层会随经过每一行/卡片而闪烁。
+    if (e.currentTarget.contains(e.relatedTarget as Node | null)) return;
     setIsDragging(false);
   };
 
@@ -1581,6 +1612,8 @@ export default function TaskPage() {
             useLocalWhisper={useLocalWhisper}
             refineOpen={refinePopoverOpen}
             onRefineOpenChange={setRefinePopoverOpen}
+            summaryOpen={summaryPopoverOpen}
+            onSummaryOpenChange={setSummaryPopoverOpen}
             onOpenAdvanced={() => setAdvancedOpen(true)}
           />
         )}
@@ -1670,14 +1703,21 @@ export default function TaskPage() {
       )}
 
       <div
-        className={cn(
-          'relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg bg-muted/40 p-2.5',
-          isDragging && 'border-2 border-dashed border-primary bg-primary/5',
-        )}
+        data-testid="task-list-panel"
+        className="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg bg-muted/40 p-2.5"
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
       >
+        {/* 拖入提示是脱离文档流的浮层：不占位，列表内容不会因为边框出现而重排 */}
+        <div
+          aria-hidden="true"
+          data-testid="task-list-drop-overlay"
+          className={cn(
+            'pointer-events-none absolute inset-0 z-10 rounded-lg border-2 border-dashed border-primary bg-primary/5 opacity-0 transition-opacity',
+            isDragging && 'opacity-100',
+          )}
+        />
         <ScrollArea className="flex-1 min-h-0">
           {viewMode === 'grid' ? (
             <TaskGridList
@@ -1687,9 +1727,7 @@ export default function TaskPage() {
               taskStatus={taskStatus}
               manuscriptPool={manuscriptPool}
               onProofread={handleProofread}
-              onDelete={(uuid) =>
-                setFiles((prev) => prev.filter((f) => f.uuid !== uuid))
-              }
+              onDelete={handleRemoveFile}
               onRetry={handleRetry}
               onReleaseGate={(file, gate) =>
                 handleReleaseGate(gate, [file.uuid])
@@ -1706,9 +1744,7 @@ export default function TaskPage() {
               taskStatus={taskStatus}
               manuscriptPool={manuscriptPool}
               onProofread={handleProofread}
-              onDelete={(uuid) =>
-                setFiles((prev) => prev.filter((f) => f.uuid !== uuid))
-              }
+              onDelete={handleRemoveFile}
               onRetry={handleRetry}
               onReleaseGate={(file, gate) =>
                 handleReleaseGate(gate, [file.uuid])
@@ -1777,8 +1813,14 @@ export default function TaskPage() {
               const el = document.getElementById('ai-refine-control-container');
               el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }}
+            onOpenSummary={() => {
+              setSummaryPopoverOpen(true);
+              const el = document.getElementById('summary-control-container');
+              el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }}
             onStatusChange={handleStatusChange}
             onTaskDispatched={handleTaskDispatched}
+            rememberDefaults={!configSnapshot}
             autoStart={
               autoStartPending &&
               configLoaded &&
@@ -1882,6 +1924,12 @@ export function getStaticPaths() {
 
 export async function getStaticProps(context) {
   return {
-    props: await getI18nProperties(context, ['common', 'home', 'tasks']),
+    // translateControl：「生成摘要」弹层里的摘要提示词编辑弹窗所需
+    props: await getI18nProperties(context, [
+      'common',
+      'home',
+      'tasks',
+      'translateControl',
+    ]),
   };
 }

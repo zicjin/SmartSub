@@ -8,6 +8,7 @@ import {
   throwIfSignalCancelled,
 } from '../helpers/taskContext';
 import type { TranslationRequestOptions } from '../translate/types';
+import { toSdkRequestOptions } from './sdkRequestOptions';
 import {
   isStructuredOutputUnsupportedError,
   resolveStructuredOutputMode,
@@ -238,7 +239,7 @@ async function callWithJsonSchema(
           },
         },
       },
-      { signal: options?.signal },
+      toSdkRequestOptions(options),
     )) as OpenAI.Chat.Completions.ChatCompletion;
     throwIfSignalCancelled(options?.signal);
     options?.onResponseMeta?.(extractOpenAIResponseMeta(completion));
@@ -256,7 +257,7 @@ async function callWithJsonSchema(
         'translation',
       ),
     },
-    { signal: options?.signal },
+    toSdkRequestOptions(options),
   );
 
   console.log('JSON Schema completion:', completion?.choices);
@@ -289,9 +290,10 @@ async function callWithStandardAPI(
 
   await options?.beforeRequest?.();
   throwIfSignalCancelled(options?.signal);
-  const completion = (await openai.chat.completions.create(requestParams, {
-    signal: options?.signal,
-  })) as OpenAI.Chat.Completions.ChatCompletion;
+  const completion = (await openai.chat.completions.create(
+    requestParams,
+    toSdkRequestOptions(options),
+  )) as OpenAI.Chat.Completions.ChatCompletion;
   console.log('Standard completion:', completion?.choices);
   throwIfSignalCancelled(options?.signal);
   options?.onResponseMeta?.(extractOpenAIResponseMeta(completion));

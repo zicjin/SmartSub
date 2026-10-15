@@ -76,6 +76,7 @@ import {
   getRefineValidationErrorMessage,
 } from 'lib/subtitleRefineValidation';
 import InlineConfigBar from '@/components/tasks/InlineConfigBar';
+import CpuAdvisoryNotice from '@/components/diagnostics/CpuAdvisoryNotice';
 import AdvancedSheet from '@/components/tasks/AdvancedSheet';
 import TaskLoadStatus from '@/components/tasks/TaskLoadStatus';
 import useTaskDependencies from 'hooks/useTaskDependencies';
@@ -713,6 +714,7 @@ export default function TaskWizard() {
     setAppliedRecipeName(null);
   }, [form]);
   const [refinePopoverOpen, setRefinePopoverOpen] = useState(false);
+  const [summaryPopoverOpen, setSummaryPopoverOpen] = useState(false);
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const dependencies = useTaskDependencies();
   const { systemInfo, providers, asrProviders, settings } = dependencies;
@@ -1387,16 +1389,33 @@ export default function TaskWizard() {
     }
     if (translateOn && formData?.generateSummary === true) {
       const summaryBlock = validateSummaryProvider(formData, providers);
-      if (summaryBlock === 'follow') {
+      if (summaryBlock) {
         list.push({
           key: 'summary',
-          text: t('wizard.blockSummaryFollow'),
-        });
-      } else if (summaryBlock === 'invalid') {
-        list.push({
-          key: 'summary',
-          text: t('wizard.blockSummaryProviderInvalid'),
-          href: `/${locale}/translation`,
+          text:
+            summaryBlock === 'follow'
+              ? t('wizard.blockSummaryFollow')
+              : t('wizard.blockSummaryProviderInvalid'),
+          href:
+            summaryBlock === 'invalid' ? `/${locale}/translation` : undefined,
+          actions: [
+            // 快捷操作 A：一键关闭摘要（解除阻断）
+            {
+              label: t('wizard.summaryActionDisable'),
+              onClick: () => {
+                form.setValue('generateSummary', false, { shouldDirty: true });
+              },
+            },
+            // 快捷操作 B：调整摘要（唤起弹层并平滑滚动到控件）
+            {
+              label: t('wizard.summaryActionAdjust'),
+              onClick: () => {
+                setSummaryPopoverOpen(true);
+                const el = document.getElementById('summary-control-container');
+                el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              },
+            },
+          ],
         });
       }
     }
@@ -2359,6 +2378,10 @@ export default function TaskWizard() {
         <Panel className="flex-none">
           <PanelHeader title={t('wizard.subtitleConfigTitle')} />
           <div className="p-2.5">
+            {/* 内置引擎且需要转写时，CPU 不满足就提前提醒（只提醒，不拦截） */}
+            {formData?.transcriptionEngine === 'builtin' &&
+              inputKind !== 'subtitle' &&
+              inputKind !== 'paired' && <CpuAdvisoryNotice className="mb-2" />}
             <InlineConfigBar
               form={form}
               formData={formData}
@@ -2369,6 +2392,8 @@ export default function TaskWizard() {
               useLocalWhisper={useLocalWhisper}
               refineOpen={refinePopoverOpen}
               onRefineOpenChange={setRefinePopoverOpen}
+              summaryOpen={summaryPopoverOpen}
+              onSummaryOpenChange={setSummaryPopoverOpen}
               onOpenAdvanced={() => setAdvancedOpen(true)}
             />
           </div>

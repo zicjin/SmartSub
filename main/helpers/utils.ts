@@ -268,6 +268,10 @@ export function getSrtFileName(
  * 支持的语言列表
  * 优化结构：默认使用 value 作为各平台的语言代码
  * 只有当某平台的代码与 value 不同时才显式定义，不支持则定义为 null
+ *
+ * 有道（youdao）网页接口只支持 17 种语言：2026-10-13 对每个语言码分别以源语言与目标语言实测，
+ * 两个方向都返回 code 40 的一律为 null；有道自己的简繁中文码是 zh-CHS / zh-CHT。
+ * 能映射的语言也不保证任意方向可用，不支持的方向由服务端 code 21 / 40 在运行时处理。
  */
 export const supportedLanguage = [
   // 最常用语言
@@ -277,6 +281,7 @@ export const supportedLanguage = [
     value: 'zh',
     xunfei: 'cn',
     bing: 'zh-Hans',
+    youdao: 'zh-CHS',
     qwenMt: 'Chinese',
   },
   { name: '英语', value: 'en', qwenMt: 'English' },
@@ -291,34 +296,67 @@ export const supportedLanguage = [
 
   // 其他欧洲语言
   { name: '荷兰语', value: 'nl', qwenMt: 'Dutch' },
-  { name: '波兰语', value: 'pl', qwenMt: 'Polish' },
-  { name: '土耳其语', value: 'tr', baidu: null, qwenMt: 'Turkish' },
-  { name: '瑞典语', value: 'sv', baidu: 'swe', qwenMt: 'Swedish' },
-  { name: '捷克语', value: 'cs', qwenMt: 'Czech' },
-  { name: '丹麦语', value: 'da', baidu: 'dan', qwenMt: 'Danish' },
-  { name: '芬兰语', value: 'fi', baidu: 'fin', qwenMt: 'Finnish' },
-  { name: '希腊语', value: 'el', doubao: null, qwenMt: 'Greek' },
-  { name: '匈牙利语', value: 'hu', qwenMt: 'Hungarian' },
+  { name: '波兰语', value: 'pl', youdao: null, qwenMt: 'Polish' },
+  {
+    name: '土耳其语',
+    value: 'tr',
+    youdao: null,
+    baidu: null,
+    qwenMt: 'Turkish',
+  },
+  {
+    name: '瑞典语',
+    value: 'sv',
+    youdao: null,
+    baidu: 'swe',
+    qwenMt: 'Swedish',
+  },
+  { name: '捷克语', value: 'cs', youdao: null, qwenMt: 'Czech' },
+  { name: '丹麦语', value: 'da', youdao: null, baidu: 'dan', qwenMt: 'Danish' },
+  {
+    name: '芬兰语',
+    value: 'fi',
+    youdao: null,
+    baidu: 'fin',
+    qwenMt: 'Finnish',
+  },
+  { name: '希腊语', value: 'el', youdao: null, doubao: null, qwenMt: 'Greek' },
+  { name: '匈牙利语', value: 'hu', youdao: null, qwenMt: 'Hungarian' },
   {
     name: '挪威语',
     value: 'no',
+    youdao: null,
     baidu: null,
     doubao: 'nb',
     bing: 'nb',
     qwenMt: 'Norwegian Bokmål',
   },
-  { name: '罗马尼亚语', value: 'ro', baidu: 'rom', qwenMt: 'Romanian' },
+  {
+    name: '罗马尼亚语',
+    value: 'ro',
+    youdao: null,
+    baidu: 'rom',
+    qwenMt: 'Romanian',
+  },
   {
     name: '斯洛伐克语',
     value: 'sk',
+    youdao: null,
     baidu: null,
     doubao: null,
     qwenMt: 'Slovak',
   },
-  { name: '克罗地亚语', value: 'hr', baidu: null, qwenMt: 'Croatian' },
+  {
+    name: '克罗地亚语',
+    value: 'hr',
+    youdao: null,
+    baidu: null,
+    qwenMt: 'Croatian',
+  },
   {
     name: '塞尔维亚语',
     value: 'sr',
+    youdao: null,
     baidu: null,
     doubao: null,
     qwenMt: 'Serbian',
@@ -326,6 +364,7 @@ export const supportedLanguage = [
   {
     name: '斯洛文尼亚语',
     value: 'sl',
+    youdao: null,
     baidu: 'slo',
     doubao: null,
     qwenMt: 'Slovenian',
@@ -333,14 +372,22 @@ export const supportedLanguage = [
   {
     name: '保加利亚语',
     value: 'bg',
+    youdao: null,
     baidu: 'bul',
     doubao: null,
     qwenMt: 'Bulgarian',
   },
-  { name: '乌克兰语', value: 'uk', baidu: null, qwenMt: 'Ukrainian' },
+  {
+    name: '乌克兰语',
+    value: 'uk',
+    youdao: null,
+    baidu: null,
+    qwenMt: 'Ukrainian',
+  },
   {
     name: '爱沙尼亚语',
     value: 'et',
+    youdao: null,
     baidu: 'est',
     doubao: null,
     qwenMt: 'Estonian',
@@ -348,6 +395,7 @@ export const supportedLanguage = [
   {
     name: '拉脱维亚语',
     value: 'lv',
+    youdao: null,
     baidu: null,
     doubao: null,
     qwenMt: 'Latvian',
@@ -355,6 +403,7 @@ export const supportedLanguage = [
   {
     name: '立陶宛语',
     value: 'lt',
+    youdao: null,
     baidu: null,
     doubao: null,
     qwenMt: 'Lithuanian',
@@ -365,10 +414,11 @@ export const supportedLanguage = [
   { name: '泰语', value: 'th', qwenMt: 'Thai' },
   { name: '越南语', value: 'vi', baidu: 'vie', qwenMt: 'Vietnamese' },
   { name: '印度尼西亚语', value: 'id', baidu: null, qwenMt: 'Indonesian' },
-  { name: '马来语', value: 'ms', baidu: null, qwenMt: 'Malay' },
+  { name: '马来语', value: 'ms', youdao: null, baidu: null, qwenMt: 'Malay' },
   {
     name: '泰米尔语',
     value: 'ta',
+    youdao: null,
     baidu: null,
     doubao: null,
     qwenMt: 'Tamil',
@@ -376,6 +426,7 @@ export const supportedLanguage = [
   {
     name: '乌尔都语',
     value: 'ur',
+    youdao: null,
     baidu: null,
     doubao: null,
     qwenMt: 'Urdu',
@@ -383,6 +434,7 @@ export const supportedLanguage = [
   {
     name: '马拉地语',
     value: 'mr',
+    youdao: null,
     baidu: null,
     doubao: null,
     qwenMt: 'Marathi',
@@ -393,6 +445,7 @@ export const supportedLanguage = [
   {
     name: '希伯来语',
     value: 'he',
+    youdao: null,
     baidu: null,
     doubao: null,
     qwenMt: 'Hebrew',
@@ -400,6 +453,7 @@ export const supportedLanguage = [
   {
     name: '波斯语',
     value: 'fa',
+    youdao: null,
     baidu: null,
     doubao: null,
     qwenMt: 'Western Persian',
@@ -409,6 +463,7 @@ export const supportedLanguage = [
   {
     name: '阿非利堪斯语',
     value: 'af',
+    youdao: null,
     baidu: null,
     doubao: null,
     qwenMt: 'Afrikaans',
@@ -416,6 +471,7 @@ export const supportedLanguage = [
   {
     name: '加泰罗尼亚语',
     value: 'ca',
+    youdao: null,
     baidu: null,
     doubao: null,
     qwenMt: 'Catalan',
@@ -423,6 +479,7 @@ export const supportedLanguage = [
   {
     name: '加利西亚语',
     value: 'gl',
+    youdao: null,
     baidu: null,
     doubao: null,
     qwenMt: 'Galician',
@@ -430,6 +487,7 @@ export const supportedLanguage = [
   {
     name: '塔加洛语',
     value: 'tl',
+    youdao: null,
     baidu: null,
     doubao: null,
     bing: 'fil',
@@ -438,6 +496,7 @@ export const supportedLanguage = [
   {
     name: '斯瓦希里语',
     value: 'sw',
+    youdao: null,
     baidu: null,
     doubao: null,
     qwenMt: 'Swahili',
@@ -445,6 +504,7 @@ export const supportedLanguage = [
   {
     name: '威尔士语',
     value: 'cy',
+    youdao: null,
     baidu: null,
     doubao: null,
     qwenMt: 'Welsh',
@@ -452,6 +512,7 @@ export const supportedLanguage = [
   {
     name: '蒙古语',
     value: 'mn',
+    youdao: null,
     baidu: null,
     volc: null,
     doubao: null,
@@ -460,6 +521,7 @@ export const supportedLanguage = [
   {
     name: '繁体中文',
     value: 'zh-Hant',
+    youdao: 'zh-CHT',
     baidu: 'cht',
     aliyun: 'zh-tw',
     google: 'zh-TW',
@@ -469,7 +531,13 @@ export const supportedLanguage = [
     qwenMt: 'Traditional Chinese',
   },
   // 粤语：主要用于 Whisper 语音识别源语言；Google 翻译无粤语，标记为不支持
-  { name: '粤语', value: 'yue', google: null, qwenMt: 'Cantonese' },
+  {
+    name: '粤语',
+    value: 'yue',
+    youdao: null,
+    google: null,
+    qwenMt: 'Cantonese',
+  },
 ];
 
 // 翻译平台类型
@@ -483,7 +551,8 @@ type TranslateProvider =
   | 'niutrans'
   | 'tencent'
   | 'xunfei'
-  | 'qwenMt';
+  | 'qwenMt'
+  | 'youdao';
 
 /**
  * 语言代码转换函数

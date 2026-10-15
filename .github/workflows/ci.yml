@@ -73,6 +73,10 @@ jobs:
       - name: Unit tests (engines)
         run: pnpm test:engines
 
+      # 显卡枚举与 stdin 管道的 EPIPE 防护；Windows 真机验证见 windows-gpu.yml
+      - name: Unit tests (GPU enumeration and stdin EPIPE hardening)
+        run: yarn test:gpu-enumeration
+
       - name: Tests (local speech review and warning persistence)
         run: |
           pnpm test:speech-review
@@ -123,8 +127,17 @@ jobs:
       - name: Unit tests (voice clone and number normalization)
         run: pnpm test:voice-clone
 
+      # 崩溃诊断的纯逻辑单测；真机上的原生崩溃验证见 crash-diagnostics.yml
+      - name: Unit tests (crash diagnostics)
+        run: yarn test:crash
+
       - name: Compile application (renderer + main)
         run: pnpm build
+
+      # Windows 合成预览黑屏的守卫靠 webpack 规则注入 JASSUB 的 Worker；规则不再命中时构建不会报错，
+      # 单测也看不出来，所以在产物里确认它还在。运行时行为的 e2e 见 scripts/e2e/compose-sync-canvas.mjs
+      - name: Check the JASSUB worker guard is in the build output
+        run: yarn check:jassub-guard
 
   docs:
     name: Docs build (Docusaurus)

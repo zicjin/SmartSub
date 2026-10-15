@@ -223,6 +223,9 @@ importers:
       wavesurfer.js:
         specifier: 8.0.1
         version: 8.0.1
+      yazl:
+        specifier: ^3.3.1
+        version: 3.3.1
       zod:
         specifier: ^3.25.76
         version: 3.25.76
@@ -272,6 +275,9 @@ importers:
       '@types/uuid':
         specifier: ^11.0.0
         version: 11.0.0
+      '@types/yazl':
+        specifier: ^3.3.1
+        version: 3.3.1
       autoprefixer:
         specifier: ^10.6.1
         version: 10.6.1(postcss@8.5.28)
@@ -3268,6 +3274,12 @@ packages:
         integrity: sha512-qUHkeCyQFxMXg79wQfTtfndEC+N9ZZg76HJftDJp+qH2tV7Gj4OJi7l+PiWwJ+pWtW8GwSmqsDj/oymhrTWXjg==,
       }
 
+  '@types/yazl@3.3.1':
+    resolution:
+      {
+        integrity: sha512-DIWfCKpsTp6hE5BDBHV3+fIL/bLUF9Bv13iDrWnMlmhQpH67buNvI291ZauQ1xcccxK3FqQ9honnXpq4R8NMuQ==,
+      }
+
   '@typescript/typescript-aix-ppc64@7.0.2':
     resolution:
       {
@@ -4238,6 +4250,13 @@ packages:
       {
         integrity: sha512-gQxTNE/GAfIIrmHLUE3oJyp5FO6HRBfhjnw4/wMmA63ZGDJnWBmgY/lyQBpnDUkGmAhbSe39tx2d/iTOAfglwQ==,
       }
+
+  buffer-crc32@1.0.0:
+    resolution:
+      {
+        integrity: sha512-Db1SbgBS/fg/392AblrMJk97KggmvYhr4pB5ZIMTWtaivCPMWLkmb7m21cJvpvgK+J3nsU2CmmixNBZx4vFj/w==,
+      }
+    engines: { node: '>=8.0.0' }
 
   buffer-from@1.1.2:
     resolution:
@@ -10181,6 +10200,12 @@ packages:
         integrity: sha512-6wdV/BqTpHzVy8cK/Jvb6tIeVdNQxWR9lSzhl7TMwthNyRZcz0cjV4NT2qkLHPyjtD8LGwAXyIbpJUpaOwhMtQ==,
       }
 
+  yazl@3.3.1:
+    resolution:
+      {
+        integrity: sha512-BbETDVWG+VcMUle37k5Fqp//7SDOK2/1+T7X8TD96M3D9G8jK5VLUdQVdVjGi8im7FGkazX7kk5hkU8X4L5Bng==,
+      }
+
   yocto-queue@0.1.0:
     resolution:
       {
@@ -12237,6 +12262,10 @@ snapshots:
     dependencies:
       '@types/yargs-parser': 21.0.3
 
+  '@types/yazl@3.3.1':
+    dependencies:
+      '@types/node': 26.6.4
+
   '@typescript/typescript-aix-ppc64@7.0.2':
     optional: true
 
@@ -12798,6 +12827,8 @@ snapshots:
   bser@2.1.1:
     dependencies:
       node-int64: 0.4.0
+
+  buffer-crc32@1.0.0: {}
 
   buffer-from@1.1.2: {}
 
@@ -16820,6 +16851,10 @@ snapshots:
   yauzl@2.4.2:
     dependencies:
       fd-slicer: 1.0.1
+
+  yazl@3.3.1:
+    dependencies:
+      buffer-crc32: 1.0.0
 
   yocto-queue@0.1.0: {}
 

@@ -115,6 +115,8 @@ function simulate({
     beforeStart: async () => true,
     buildTaskSnapshotFromConfig: structuredClone,
     rememberSelection() {},
+    rememberDefaults: true,
+    rememberConfig() {},
     onTaskDispatched() {},
     console,
     encodeURIComponent,
@@ -186,6 +188,7 @@ function simulate({
     projectId: 'test-project',
     cachedProviders: [],
     onOpenRefine: undefined,
+    onOpenSummary: undefined,
     dispatchTask: (files) => dispatched.push(files),
   });
   const submission = {

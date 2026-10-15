@@ -5,6 +5,7 @@ import {
   throwIfSignalCancelled,
 } from '../helpers/taskContext';
 import type { TranslationRequestOptions } from '../translate/types';
+import { toSdkRequestOptions } from './sdkRequestOptions';
 import {
   isStructuredOutputUnsupportedError,
   resolveStructuredOutputMode,
@@ -137,9 +138,10 @@ export async function translateWithAzureOpenAI(
               return (async () => {
                 await options?.beforeRequest?.();
                 throwIfSignalCancelled(options?.signal);
-                return openai.chat.completions.create(requestParams, {
-                  signal: options?.signal,
-                });
+                return openai.chat.completions.create(
+                  requestParams,
+                  toSdkRequestOptions(options),
+                );
               })();
             },
           }),
