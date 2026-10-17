@@ -200,9 +200,7 @@ export class FireRedModelDownloader {
     source: FireRedModelSource = FIRERED_DEFAULT_SOURCE,
   ): Promise<boolean> {
     if (isFireRedModelInstalled(id)) {
-      this.abortController = new AbortController();
       await this.ensurePuncModel();
-      this.abortController = null;
       return true;
     }
     // The punctuation model is shared by both ASR variants. Install it before
@@ -277,6 +275,7 @@ export class FireRedModelDownloader {
 
   async ensurePuncModel(): Promise<boolean> {
     if (isFireRedPuncModelInstalled()) return true;
+    this.abortController = new AbortController();
     const staging = path.join(
       getFireRedModelsRoot(),
       `.${FIRERED_PUNC_MODEL_ID}.staging`,
@@ -325,6 +324,7 @@ export class FireRedModelDownloader {
       throw error;
     } finally {
       this.currentKey = null;
+      this.abortController = null;
     }
   }
 

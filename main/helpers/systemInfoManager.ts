@@ -72,6 +72,7 @@ import {
 import {
   getFireRedModelDownloader,
   getFireRedProgressKey,
+  getFireRedPuncProgressKey,
 } from './fireRedModelDownloader';
 import {
   FIRERED_MODELS,
@@ -661,6 +662,23 @@ export function setupSystemInfoManager(mainWindow: BrowserWindow) {
       }
     },
   );
+
+  ipcMain.handle('downloadFireRedPuncModel', async () => {
+    if (downloadingModels.size > 0) {
+      return { success: false, error: 'anotherDownloadInProgress' };
+    }
+    const progressKey = getFireRedPuncProgressKey();
+    downloadingModels.add(progressKey);
+    try {
+      await fireRedModelDownloader.ensurePuncModel();
+      return { success: true };
+    } catch (error) {
+      logMessage(`firered punctuation model download error: ${error}`, 'error');
+      return { success: false, error: String(error) };
+    } finally {
+      downloadingModels.delete(progressKey);
+    }
+  });
 
   ipcMain.handle('getFireRedModelStatus', async () => ({
     success: true,

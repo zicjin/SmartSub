@@ -122,16 +122,19 @@ const FireRedModelSection: React.FC<{ onUpdate?: () => void }> = ({
   }, [load, onUpdate]);
 
   const doDownloadFireRed = async (
-    modelId: FireRedModelId,
-    selectedSource: FireRedModelSource,
+    modelId: FireRedModelId | 'firered-punc',
+    selectedSource: FireRedModelSource = source,
   ) => {
     setOpenDownloadModel(null);
     setDownloading(modelId);
     try {
-      const r = await window?.ipc?.invoke('downloadFireRedModel', {
-        model: modelId,
-        source: selectedSource,
-      });
+      const r =
+        modelId === 'firered-punc'
+          ? await window?.ipc?.invoke('downloadFireRedPuncModel')
+          : await window?.ipc?.invoke('downloadFireRedModel', {
+              model: modelId,
+              source: selectedSource,
+            });
       if (r?.success) {
         await load();
         onUpdate?.();
@@ -149,6 +152,7 @@ const FireRedModelSection: React.FC<{ onUpdate?: () => void }> = ({
       setProgress((prev) => ({
         ...prev,
         [`firered:${modelId}`]: 0,
+        'firered-punc': 0,
       }));
     }
   };
@@ -315,7 +319,7 @@ const FireRedModelSection: React.FC<{ onUpdate?: () => void }> = ({
         </Card>
       </section>
 
-      <section className="space-y-2">
+      <section className="space-y-2" data-testid="firered-punc-section">
         <div className="flex items-baseline gap-2 px-1">
           <Mic className="h-4 w-4 self-center text-muted-foreground" />
           <h3 className="text-sm font-semibold">
@@ -342,15 +346,39 @@ const FireRedModelSection: React.FC<{ onUpdate?: () => void }> = ({
                       : t('engines.fireRedAsr.puncMissing')}
               </div>
             </div>
-            {status?.punc?.installed && (
+            {downloading === 'firered-punc' ? (
+              <Button
+                size="sm"
+                variant="ghost"
+                className="gap-1.5 text-muted-foreground"
+                data-testid="firered-punc-cancel"
+                onClick={handleCancel}
+              >
+                <X className="h-3.5 w-3.5" />
+                {commonT('cancel')}
+              </Button>
+            ) : status?.punc?.installed ? (
               <Button
                 size="sm"
                 variant="ghost"
                 className="gap-1.5 text-muted-foreground hover:text-destructive"
+                disabled={!!downloading}
                 onClick={handleDeletePunc}
               >
                 <Trash2 className="h-3.5 w-3.5" />
                 {t('engines.fireRedAsr.puncDelete')}
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-1.5"
+                data-testid="firered-punc-download"
+                disabled={!status || !!downloading}
+                onClick={() => doDownloadFireRed('firered-punc')}
+              >
+                <Download className="h-3.5 w-3.5" />
+                {t('engines.fireRedAsr.puncDownload')}
               </Button>
             )}
           </CardContent>
