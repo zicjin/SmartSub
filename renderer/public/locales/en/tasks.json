@@ -103,6 +103,7 @@
     "composeEncoder": "Encoder",
     "composeEncoderUnavailable": "(unavailable on this device)",
     "composeAudioHint": "The dub track will replace the original audio automatically",
+    "composeContentHint": "Subtitles in the final video follow the \"Output content\" setting: {{content}}",
     "composeStyleHint": "Fine-tune styles in the compose workbench and save them as my styles. ",
     "composeStyleLink": "Adjust style",
     "gatesTitle": "Manual review (optional)",
@@ -285,6 +286,11 @@
     "recognition": "Transcription",
     "output": "Output & saving",
     "execution": "Execution"
+  },
+  "embeddedSubtitleSetting": {
+    "description": "When a video carries a text subtitle track, extract it instead of running speech recognition. Videos without one are transcribed as usual.",
+    "promptLabel": "Ask me before starting",
+    "promptDescription": "When a video has embedded subtitles, ask once before the task starts."
   },
   "vad": {
     "label": "Voice activity detection (VAD)",
